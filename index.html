@@ -27,10 +27,8 @@
         .quiet-luxury { border: 1px solid var(--border); background: var(--surface); transition: all 0.3s ease; }
         .quiet-luxury:hover { border-color: var(--accent); }
         .gold-gradient { background: linear-gradient(135deg, var(--accent) 0%, #F4D03F 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        /* تحسين clip-path مع fallback */
         .btn-primary { background: var(--accent); color: var(--bg); font-weight: 700; border-radius: 4px; transition: 0.3s; cursor: pointer; padding: 0.5rem 1rem; }
         .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.1); }
-        /* دعم clip-path للمتصفحات الحديثة مع الاحتفاظ بشكل آمن */
         @supports (clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%)) {
             .btn-primary { clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%); border-radius: 0; }
         }
@@ -141,7 +139,7 @@
             <div><h2 class="text-3xl md:text-4xl font-bold tracking-tighter">الجدول الزمني</h2><p class="text-xs text-[var(--accent)] mt-2 opacity-60" id="currentDate"></p></div>
             <div class="text-left flex items-center gap-4"><div id="liveClock" class="text-xl font-mono tracking-wider text-[var(--accent)]">--:--</div><div><p class="text-[9px] uppercase tracking-widest opacity-40">التقدم</p><div class="text-2xl font-bold font-mono" id="progressPercent">0%</div></div></div>
         </div>
-        <div class="mb-6 p-4 quiet-luxury rounded-sm flex justify-between items-center flex-wrap gap-2"><div class="flex items-center gap-2"><span class="text-sm">⏳ أقرب امتحان:</span><span id="nextExamName" class="font-bold">لم يحدد</span></div><div class="flex items-center gap-3"><span class="text-xl font-bold text-[var(--accent)]" id="examDaysLeft">--</span><button onclick="openModal('examModal')" class="text-[var(--accent)] hover:text-white"><i data-lucide="edit-2" class="w-4 h-4"></i></button></div></div>
+        <div class="mb-6 p-4 quiet-luxury rounded-sm flex justify-between items-center flex-wrap gap-2"><div class="flex items-center gap-2"><span class="text-sm">⏳ أقرب امتحان:</span><span id="nextExamName" class="font-bold">لم يحدد</span></div><div class="flex items-center gap-3"><span class="text-xl font-bold text-[var(--accent)]" id="examDaysLeft">--</span><button onclick="editNearestExam()" class="text-[var(--accent)] hover:text-white"><i data-lucide="edit-2" class="w-4 h-4"></i></button></div></div>
         <div id="timelineContainer" class="space-y-4"><div id="timelineList" class="space-y-2 max-h-[500px] overflow-y-auto pr-2"></div><div id="emptyTimeline" class="py-20 text-center border border-dashed border-white/5 rounded-sm"><i data-lucide="calendar" class="w-10 h-10 mx-auto opacity-20 mb-4"></i><p class="opacity-30 uppercase tracking-[5px] text-sm">لا توجد مهام مجدولة</p></div></div>
         <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="quiet-luxury p-4 rounded-sm"><div class="flex justify-between items-center mb-2"><h4 class="text-xs uppercase tracking-widest text-[var(--accent)]">📋 مسودة الغد</h4><button onclick="showDraftHistory()" class="text-[10px] border border-white/10 px-2 py-1 rounded-sm">📜 السجل</button></div><textarea id="tomorrowDraft" class="w-full p-2 text-sm h-20" placeholder="مهام الغد..."></textarea><button onclick="saveTomorrowDraft()" class="text-[10px] border border-white/10 px-3 py-1 mt-2">حفظ</button><div id="draftHistoryPanel" class="mt-2 max-h-32 overflow-y-auto text-xs hidden border-t border-white/10 pt-2"></div></div>
@@ -175,7 +173,7 @@
 
 <div id="moodModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm"><div class="quiet-luxury w-full max-w-sm p-6 rounded-sm"><div class="flex justify-between items-center mb-4"><h3 class="text-lg font-bold">كيف تشعر اليوم؟</h3><button onclick="closeModal('moodModal')"><i data-lucide="x" class="w-5 h-5"></i></button></div><div class="grid grid-cols-5 gap-2 mb-4"><button onclick="setMood(1, event)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">😞</button><button onclick="setMood(2, event)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">😐</button><button onclick="setMood(3, event)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">🙂</button><button onclick="setMood(4, event)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">😊</button><button onclick="setMood(5, event)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">🤩</button></div><textarea id="gratitudeNote" class="w-full p-3 text-sm h-20 mb-4" placeholder="شيء واحد ممتن له اليوم..."></textarea><button onclick="saveMoodAndGratitude()" class="btn-primary w-full py-3 uppercase text-xs">حفظ اليوم</button></div></div>
 
-<div id="examModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm"><div class="quiet-luxury w-full max-w-md p-6 rounded-sm"><div class="flex justify-between items-center mb-6"><h3 class="text-lg font-bold tracking-widest uppercase">إدارة الامتحانات</h3><button onclick="closeModal('examModal')"><i data-lucide="x" class="w-6 h-6"></i></button></div><div class="mb-6"><div class="grid grid-cols-2 gap-2 mb-2"><input type="text" id="newExamName" placeholder="اسم الامتحان" class="p-2 text-sm"><input type="date" id="newExamDate" class="p-2 text-sm"></div><button onclick="addExam()" class="w-full bg-[var(--accent)] text-black py-2 text-xs uppercase font-bold">إضافة امتحان</button></div><div class="space-y-2 max-h-64 overflow-y-auto"><p class="text-xs opacity-50 mb-2">الامتحانات المسجلة</p><div id="examsListContainer"></div></div><button onclick="closeModal('examModal')" class="w-full mt-4 border border-white/10 py-2 uppercase text-xs">إغلاق</button></div></div>
+<div id="examModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm"><div class="quiet-luxury w-full max-w-md p-6 rounded-sm"><div class="flex justify-between items-center mb-6"><h3 class="text-lg font-bold tracking-widest uppercase">إدارة الامتحانات</h3><button onclick="closeModal('examModal')"><i data-lucide="x" class="w-6 h-6"></i></button></div><div class="mb-6"><div class="grid grid-cols-2 gap-2 mb-2"><input type="text" id="newExamName" placeholder="اسم الامتحان" class="p-2 text-sm"><input type="date" id="newExamDate" class="p-2 text-sm"></div><button id="addExamBtn" onclick="addExam()" class="w-full bg-[var(--accent)] text-black py-2 text-xs uppercase font-bold">إضافة امتحان</button></div><div class="space-y-2 max-h-64 overflow-y-auto"><p class="text-xs opacity-50 mb-2">الامتحانات المسجلة</p><div id="examsListContainer"></div></div><button onclick="closeModal('examModal')" class="w-full mt-4 border border-white/10 py-2 uppercase text-xs">إغلاق</button></div></div>
 
 <script>
     (function(){
@@ -193,7 +191,6 @@
         let draftHistory = [];
         let notesHistory = [];
         
-        // متغير لحفظ التغييرات لاستخدام saveAll بشكل محدود
         let saveTimeout = null;
         function debouncedSave() {
             if (saveTimeout) clearTimeout(saveTimeout);
@@ -203,7 +200,6 @@
             }, 300);
         }
 
-        // دالة التحقق من صحة البيانات عند التحميل
         function validateData() {
             if (!Array.isArray(tasks)) tasks = [];
             if (!Array.isArray(templates) || templates.length === 0) {
@@ -229,7 +225,6 @@
             if (!Array.isArray(draftHistory)) draftHistory = [];
             if (!Array.isArray(notesHistory)) notesHistory = [];
             
-            // إصلاح المهام القديمة: إضافة قيم افتراضية
             tasks.forEach(t => {
                 if (!t.priority) t.priority = 'normal';
                 if (!t.start) t.start = '09:00';
@@ -239,7 +234,6 @@
             });
         }
 
-        // تحميل البيانات من localStorage مع التحقق
         function loadFromLocalStorage() {
             try {
                 const storedTasks = localStorage.getItem('arise_tasks');
@@ -259,7 +253,6 @@
                 const storedNotesHistory = localStorage.getItem('arise_notes_history');
                 if (storedNotesHistory) notesHistory = JSON.parse(storedNotesHistory);
                 
-                // استعادة حالات الوضع
                 const storedEmergency = localStorage.getItem('arise_emergencyMode');
                 if (storedEmergency !== null) emergencyMode = storedEmergency === 'true';
                 const storedZen = localStorage.getItem('arise_zenMode');
@@ -296,7 +289,6 @@
             return getCurrentTemplate().subjects; 
         }
 
-        // تحسين دالة calculateEndTime
         function calculateEndTime(start, dur) {
             if (!start || typeof start !== 'string' || !start.includes(':')) return '--:--';
             const parts = start.split(':');
@@ -374,7 +366,6 @@
             document.getElementById('dailyTip').innerText = tips[Math.floor((new Date() - new Date(new Date().getFullYear(),0,0))/86400000) % tips.length]; 
         }
 
-        // تحديث الساعة كل 30 ثانية بدلاً من 500ms
         let clockInterval = null;
         function startLiveClock() { 
             const el = document.getElementById('liveClock'); 
@@ -389,7 +380,6 @@
             clockInterval = setInterval(updateClock, 30000);
         }
 
-        // ====================== دوال العرض ======================
         function renderCategoryCards() { 
             const cats = getCurrentCategories();
             const cnt = {};
@@ -484,6 +474,7 @@
             ).join(''); 
         }
 
+        // ========== إدارة الامتحانات مع التعديل ==========
         function renderExamsList() { 
             const cont = document.getElementById('examsListContainer'); 
             if (!user.exams.length) { 
@@ -499,11 +490,60 @@
                             <span>${escapeHtml(e.name)}</span>
                             <span class="text-[10px] opacity-50 mr-2">${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} (${days>0 ? days+' يوم' : days===0 ? 'اليوم!' : 'انتهى'})</span>
                         </div>
-                        <button onclick="deleteExam(${i})" class="text-red-500/50"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        <div class="flex gap-1">
+                            <button onclick="editExam(${i})" class="text-[var(--accent)] hover:text-white"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                            <button onclick="deleteExam(${i})" class="text-red-500/50"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
                     </div>`; 
                 }).join(''); 
             lucide.createIcons(); 
         }
+
+        let currentEditIndex = null;
+        window.editExam = function(index) {
+            const exam = user.exams[index];
+            if (exam) {
+                currentEditIndex = index;
+                document.getElementById('newExamName').value = exam.name;
+                document.getElementById('newExamDate').value = exam.date;
+                const addBtn = document.getElementById('addExamBtn');
+                addBtn.innerText = 'تعديل الامتحان';
+                addBtn.onclick = () => {
+                    const newName = document.getElementById('newExamName').value.trim();
+                    const newDate = document.getElementById('newExamDate').value;
+                    if (newName && newDate) {
+                        user.exams[currentEditIndex] = { name: newName, date: newDate };
+                        debouncedSave();
+                        renderExamsList();
+                        updateExamCountdown();
+                        showToast('تم تعديل الامتحان');
+                    } else {
+                        showToast('اسم وتاريخ الامتحان مطلوبان');
+                    }
+                    // إعادة الزر إلى وضعه الطبيعي
+                    addBtn.innerText = 'إضافة امتحان';
+                    addBtn.onclick = window.addExam;
+                    currentEditIndex = null;
+                    closeModal('examModal');
+                };
+                openModal('examModal');
+            }
+        };
+
+        window.editNearestExam = function() {
+            if (!user.exams.length) {
+                showToast('لا يوجد امتحانات مسجلة');
+                openModal('examModal');
+                return;
+            }
+            const sorted = [...user.exams].sort((a,b) => new Date(a.date) - new Date(b.date));
+            const nearestIndex = user.exams.findIndex(e => e.name === sorted[0].name && e.date === sorted[0].date);
+            if (nearestIndex !== -1) {
+                editExam(nearestIndex);
+            } else {
+                openModal('examModal');
+            }
+        };
 
         function updateExamCountdown() { 
             if (!user.exams.length) { 
@@ -517,15 +557,37 @@
             document.getElementById('examDaysLeft').innerText = days>0 ? `${days} يوم` : days===0 ? 'اليوم!' : 'انتهى'; 
         }
 
+        window.addExam = function() { 
+            const n = document.getElementById('newExamName').value.trim(); 
+            const d = document.getElementById('newExamDate').value; 
+            if (!n || !d) return showToast('أدخل البيانات'); 
+            user.exams.push({name: n, date: d}); 
+            debouncedSave(); 
+            renderExamsList(); 
+            updateExamCountdown(); 
+            document.getElementById('newExamName').value = ''; 
+            document.getElementById('newExamDate').value = ''; 
+            closeModal('examModal'); 
+            showToast('تمت إضافة الامتحان'); 
+        };
+
+        window.deleteExam = function(i) { 
+            if (confirm('هل تريد حذف هذا الامتحان؟')) {
+                user.exams.splice(i, 1); 
+                debouncedSave(); 
+                renderExamsList(); 
+                updateExamCountdown(); 
+                showToast('تم حذف الامتحان');
+            }
+        };
+
         // ====================== إدارة القوالب ======================
         function renderTemplateSelectForEdit() {
             const select = document.getElementById('templateSelectForEdit');
             select.innerHTML = templates.map((t, i) => `<option value="${escapeHtml(t.name)}" ${t.name === currentTemplateName ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join('');
             select.onchange = () => {
                 currentTemplateName = select.value;
-                // تحديث أسماء القالب المعروضة في نفس المودال
                 updateTemplateNamesDisplay();
-                // إعادة تحويل المهام غير المتوافقة
                 migrateTasksToCurrentTemplate();
                 debouncedSave();
                 renderTemplateManagers();
@@ -543,7 +605,6 @@
             document.getElementById('selectedTemplateNameForSubjects').innerText = currentTemplateName;
         }
         
-        // تحويل المهام غير المتوافقة مع القالب الحالي
         function migrateTasksToCurrentTemplate() {
             const template = getCurrentTemplate();
             const validCats = template.categories;
@@ -818,28 +879,6 @@
             showToast('تم إلغاء وضع التركيز'); 
         };
 
-        // ====================== إدارة الامتحانات ======================
-        window.addExam = function() { 
-            const n = document.getElementById('newExamName').value.trim(); 
-            const d = document.getElementById('newExamDate').value; 
-            if (!n || !d) return showToast('أدخل البيانات'); 
-            user.exams.push({name: n, date: d}); 
-            debouncedSave(); 
-            renderExamsList(); 
-            updateExamCountdown(); 
-            document.getElementById('newExamName').value = ''; 
-            document.getElementById('newExamDate').value = ''; 
-            closeModal('examModal'); 
-            showToast('تمت إضافة الامتحان'); 
-        };
-
-        window.deleteExam = function(i) { 
-            user.exams.splice(i, 1); 
-            debouncedSave(); 
-            renderExamsList(); 
-            updateExamCountdown(); 
-        };
-
         // ====================== سجل المزاج والامتنان ======================
         let currentMood = 3;
         window.setMood = function(v, event) { 
@@ -1058,6 +1097,13 @@
         window.closeModal = function(id) { 
             const modal = document.getElementById(id); 
             if (modal) { 
+                // إذا كان المودال هو examModal، تأكد من إعادة زر الإضافة إلى وضعه الطبيعي
+                if (id === 'examModal') {
+                    const addBtn = document.getElementById('addExamBtn');
+                    addBtn.innerText = 'إضافة امتحان';
+                    addBtn.onclick = window.addExam;
+                    currentEditIndex = null;
+                }
                 modal.classList.add('hidden'); 
                 modal.classList.remove('flex'); 
             } 
@@ -1217,7 +1263,6 @@
             lucide.createIcons(); 
         }
 
-        // بدء التطبيق
         window.onload = () => {
             loadFromLocalStorage();
             if (localStorage.getItem('arise_welcomed')) 
