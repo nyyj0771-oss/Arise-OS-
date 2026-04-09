@@ -5,140 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Arise OS | البروتوكول النهائي</title>
     
-    <!-- Fonts & Icons -->
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050505'/%3E%3Ctext x='50' y='72' font-family='Arial' font-size='60' font-weight='bold' fill='%23D4AF37' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Cairo:wght@400;700;900&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- Toastify -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     
     <style>
-        /* ===== THEMES ===== */
-        .theme-matte-gold {
-            --bg: #050505;
-            --surface: #0a0a0a;
-            --accent: #D4AF37;
-            --border: rgba(212, 175, 55, 0.2);
-            --text-main: #ffffff;
-            --text-dim: #a0a0a0;
-            --emergency: #b91c1c;
-        }
-        .theme-cyber-noir {
-            --bg: #0b0c0e;
-            --surface: #131519;
-            --accent: #00ffcc;
-            --border: rgba(0, 255, 204, 0.15);
-            --text-main: #e0e0e0;
-            --text-dim: #888888;
-            --emergency: #ff3366;
-        }
-        .theme-stealth-white {
-            --bg: #f5f5f7;
-            --surface: #ffffff;
-            --accent: #000000;
-            --border: rgba(0,0,0,0.08);
-            --text-main: #1c1c1e;
-            --text-dim: #6c6c70;
-            --emergency: #dc2626;
-        }
-        .theme-shadow {
-            --bg: #0f0f1a;
-            --surface: #1a1a2e;
-            --accent: #9b59b6;
-            --border: rgba(155, 89, 182, 0.3);
-            --text-main: #f0e6ff;
-            --text-dim: #b8a9d4;
-            --emergency: #e74c3c;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            font-family: 'Cairo', 'Inter', sans-serif;
-            margin: 0;
-            line-height: 1.6;
-            -webkit-tap-highlight-color: transparent;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .quiet-luxury {
-            border: 1px solid var(--border);
-            background: var(--surface);
-            transition: all 0.3s ease;
-        }
+        /* ========== الثيمات ========== */
+        .theme-matte-gold { --bg: #050505; --surface: #0a0a0a; --accent: #D4AF37; --border: rgba(212,175,55,0.2); --text-main: #ffffff; --text-dim: #a0a0a0; --emergency: #b91c1c; }
+        .theme-cyber-noir { --bg: #0b0c0e; --surface: #131519; --accent: #00ffcc; --border: rgba(0,255,204,0.15); --text-main: #e0e0e0; --text-dim: #888888; --emergency: #ff3366; }
+        .theme-stealth-white { --bg: #f5f5f7; --surface: #ffffff; --accent: #000000; --border: rgba(0,0,0,0.08); --text-main: #1c1c1e; --text-dim: #6c6c70; --emergency: #dc2626; }
+        .theme-shadow { --bg: #0f0f1a; --surface: #1a1a2e; --accent: #9b59b6; --border: rgba(155,89,182,0.3); --text-main: #f0e6ff; --text-dim: #b8a9d4; --emergency: #e74c3c; }
+        
+        body { background-color: var(--bg); color: var(--text-main); font-family: 'Cairo', 'Inter', sans-serif; margin: 0; line-height: 1.6; transition: background 0.3s, color 0.3s; }
+        .quiet-luxury { border: 1px solid var(--border); background: var(--surface); transition: all 0.3s ease; }
         .quiet-luxury:hover { border-color: var(--accent); }
-
-        .gold-gradient {
-            background: linear-gradient(135deg, var(--accent) 0%, #F4D03F 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .signature {
-            font-family: 'Space Grotesk', sans-serif;
-            letter-spacing: -0.05em;
-            text-transform: uppercase;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: var(--bg);
-            font-weight: 700;
-            clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%);
-            transition: 0.3s;
-        }
+        .gold-gradient { background: linear-gradient(135deg, var(--accent) 0%, #F4D03F 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .btn-primary { background: var(--accent); color: var(--bg); font-weight: 700; clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%); transition: 0.3s; cursor: pointer; }
         .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.1); }
-
-        input, select, textarea {
-            background: var(--surface) !important;
-            border: 1px solid var(--border) !important;
-            border-radius: 4px !important;
-            color: var(--text-main) !important;
-            outline: none !important;
-        }
-        input:focus, select:focus { border-color: var(--accent) !important; }
-
+        input, select, textarea { background: var(--surface) !important; border: 1px solid var(--border) !important; border-radius: 4px !important; color: var(--text-main) !important; outline: none !important; }
+        input:focus, select:focus, textarea:focus { border-color: var(--accent) !important; }
         ::-webkit-scrollbar { width: 3px; height: 3px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--accent); }
-
         .zen-mode .sidebar, .zen-mode nav, .zen-mode footer { display: none; }
         .zen-mode .main-content { max-width: 100%; padding: 2rem; }
-
-        .level-badge {
-            background: var(--accent);
-            color: var(--bg);
-            font-weight: bold;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 10px;
-        }
-
-        .toastify {
-            background: var(--surface) !important;
-            color: var(--text-main) !important;
-            border: 1px solid var(--accent) !important;
-            font-family: 'Cairo', sans-serif !important;
-        }
-        
-        /* WhatsApp buttons */
-        .wa-btn {
-            background: #25D366;
-            color: #000;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-        .wa-btn:hover {
-            background: #20b358;
-            transform: scale(1.02);
-        }
+        .level-badge { background: var(--accent); color: var(--bg); font-weight: bold; padding: 2px 8px; border-radius: 20px; font-size: 10px; }
+        .toastify { background: var(--surface) !important; color: var(--text-main) !important; border: 1px solid var(--accent) !important; font-family: 'Cairo', sans-serif !important; }
+        .wa-btn { background: #25D366; color: #000; font-weight: bold; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .wa-btn:hover { background: #20b358; transform: scale(1.02); }
+        button { cursor: pointer; }
+        .template-edit-section { border-right: 2px solid var(--accent); padding-right: 12px; margin-bottom: 16px; }
     </style>
 </head>
 <body class="selection:bg-[var(--accent)] selection:text-black theme-matte-gold">
 
-<!-- Welcome Screen -->
+<!-- شاشة الترحيب -->
 <div id="welcomeScreen" class="fixed inset-0 bg-black/95 z-[200] flex items-center justify-center p-4" style="display: flex;">
     <div class="quiet-luxury max-w-md w-full p-8 rounded-sm text-center">
         <div class="w-20 h-20 border-2 border-[var(--accent)] flex items-center justify-center font-black text-4xl mx-auto mb-6">A</div>
@@ -153,31 +60,20 @@
     </div>
 </div>
 
-<!-- Navigation -->
-<nav class="border-b border-white/5 py-4 px-4 md:px-8 flex justify-between items-center sticky top-0 bg-[var(--bg)]/90 backdrop-blur-xl z-50">
+<!-- شريط التنقل -->
+<nav class="border-b border-white/5 py-4 px-4 md:px-8 flex justify-between items-center sticky top-0 bg-[var(--bg)]/90 backdrop-blur-xl z-50 flex-wrap gap-2">
     <div class="flex items-center gap-3">
         <div class="w-10 h-10 border-2 border-[var(--accent)] flex items-center justify-center font-black text-xl">A</div>
-        <div>
-            <h1 class="text-sm font-black tracking-widest uppercase">Arise Tech</h1>
-            <p class="text-[9px] text-[var(--accent)] uppercase tracking-[3px]">Global Intelligence</p>
-        </div>
+        <div><h1 class="text-sm font-black tracking-widest uppercase">Arise Tech</h1><p class="text-[9px] text-[var(--accent)] uppercase tracking-[3px]">Global Intelligence</p></div>
     </div>
     <div class="hidden md:block relative">
         <input type="text" id="searchBox" placeholder="بحث سريع..." class="w-48 px-3 py-1 text-xs bg-transparent border border-white/20 rounded-full focus:w-64 transition-all" />
     </div>
-    <div class="flex items-center gap-3 md:gap-6">
-        <div class="hidden sm:flex items-center gap-2">
-            <div class="level-badge" id="userLevelDisplay">Lv.1</div>
-            <div class="text-xs" id="xpDisplay">0 XP</div>
-        </div>
-        <div class="hidden sm:block text-center">
-            <div id="pomodoroDisplay" class="text-xl md:text-2xl font-bold font-mono timer-glow text-[var(--accent)]">25:00</div>
-            <div class="flex gap-1 justify-center mt-1">
-                <button id="timerToggleBtn" class="text-[9px] uppercase border border-white/10 px-2 py-0.5 rounded hover:bg-white/5">بدء</button>
-                <button id="timerResetBtn" class="text-[9px] uppercase border border-white/10 px-2 py-0.5 rounded hover:bg-white/5">إعادة</button>
-            </div>
-        </div>
-        <button onclick="openModal('catModal')" class="text-[10px] uppercase font-bold tracking-widest border-b border-[var(--accent)] pb-1">الأقسام</button>
+    <div class="flex items-center gap-3 md:gap-6 flex-wrap">
+        <div class="hidden sm:flex items-center gap-2"><div class="level-badge" id="userLevelDisplay">Lv.1</div><div class="text-xs" id="xpDisplay">0 XP</div></div>
+        <div class="hidden sm:block text-center"><div id="pomodoroDisplay" class="text-xl md:text-2xl font-bold font-mono text-[var(--accent)]">25:00</div><div class="flex gap-1 justify-center mt-1"><button id="timerToggleBtn" class="text-[9px] uppercase border border-white/10 px-2 py-0.5 rounded hover:bg-white/5">بدء</button><button id="timerResetBtn" class="text-[9px] uppercase border border-white/10 px-2 py-0.5 rounded hover:bg-white/5">إعادة</button></div></div>
+        <button onclick="openModal('focusModal')" class="text-[10px] uppercase font-bold tracking-widest border-b border-[var(--accent)] pb-1">🎯 تركيز</button>
+        <button onclick="openModal('logsModal')" class="text-[10px] uppercase font-bold tracking-widest border-b border-white/30 pb-1">📋 السجلات</button>
         <button onclick="openModal('statsModal')" class="text-[10px] uppercase font-bold tracking-widest border-b border-white/30 pb-1">الإحصائيات</button>
         <button onclick="shareAchievement()" class="text-[10px] uppercase font-bold tracking-widest border-b border-white/30 pb-1">📸 مشاركة</button>
         <button onclick="toggleZenMode()" class="text-[10px] uppercase font-bold tracking-widest border-b border-white/30 pb-1">🧘 هدوء</button>
@@ -185,35 +81,22 @@
     </div>
 </nav>
 
-<!-- Emergency Banner -->
-<div id="emergencyBanner" class="hidden bg-[var(--emergency)]/10 border-b border-[var(--emergency)] px-4 py-2 text-center text-xs tracking-widest text-[var(--emergency)]">
-    ⚡ وضع الطوارئ مُفعّل - عرض أهم 3 مهام فقط
-</div>
+<div id="emergencyBanner" class="hidden bg-[var(--emergency)]/10 border-b border-[var(--emergency)] px-4 py-2 text-center text-xs tracking-widest text-[var(--emergency)]">⚡ وضع الطوارئ مُفعّل - عرض أهم 3 مهام فقط</div>
+<div id="focusBanner" class="hidden bg-[var(--accent)]/10 border-b border-[var(--accent)] px-4 py-2 text-center text-xs tracking-widest text-[var(--accent)]">🎯 وضع التركيز مُفعّل - يتم عرض الأقسام المختارة فقط</div>
 
-<!-- Main -->
 <main class="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12 grid grid-cols-1 lg:grid-cols-12 gap-8">
     <div class="lg:col-span-4 space-y-6 sidebar">
         <div class="quiet-luxury p-6 rounded-sm relative overflow-hidden">
             <div class="absolute top-0 right-0 p-2 opacity-10"><i data-lucide="quote"></i></div>
             <h3 class="text-[10px] uppercase tracking-[4px] text-[var(--accent)] font-bold mb-3">شفرة اليوم</h3>
             <p id="dailyTip" class="text-base font-medium leading-relaxed italic"></p>
-            <div class="mt-4 flex justify-between items-center border-t border-white/5 pt-3">
-                <span class="text-xs opacity-50">🔥 Streak</span>
-                <span class="text-xl font-bold text-[var(--accent)]" id="streakCount">0</span>
-                <span class="text-xs">يوم</span>
-            </div>
+            <div class="mt-4 flex justify-between items-center border-t border-white/5 pt-3"><span class="text-xs opacity-50">🔥 Streak</span><span class="text-xl font-bold text-[var(--accent)]" id="streakCount">0</span><span class="text-xs">يوم</span></div>
         </div>
-
         <div class="quiet-luxury p-6 rounded-sm">
             <h3 class="text-[10px] uppercase tracking-[4px] text-[var(--accent)] font-bold mb-4">التقدم</h3>
-            <div class="space-y-2">
-                <div class="flex justify-between text-sm"><span>المستوى</span><span id="currentLevel">1</span></div>
-                <div class="w-full bg-white/5 h-2 rounded-full"><div id="xpBar" class="bg-[var(--accent)] h-2 rounded-full" style="width:0%"></div></div>
-                <div class="flex justify-between text-xs opacity-50"><span id="currentXP">0</span><span id="nextLevelXP">100</span></div>
-            </div>
+            <div class="space-y-2"><div class="flex justify-between text-sm"><span>المستوى</span><span id="currentLevel">1</span></div><div class="w-full bg-white/5 h-2 rounded-full"><div id="xpBar" class="bg-[var(--accent)] h-2 rounded-full" style="width:0%"></div></div><div class="flex justify-between text-xs opacity-50"><span id="currentXP">0</span><span id="nextLevelXP">100</span></div></div>
             <div class="mt-4 grid grid-cols-3 gap-2" id="badgesContainer"></div>
         </div>
-
         <div class="quiet-luxury p-6 rounded-sm">
             <h3 class="text-[10px] uppercase tracking-[4px] text-[var(--accent)] font-bold mb-5">إضافة مهمة</h3>
             <div class="space-y-3">
@@ -224,243 +107,391 @@
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <input type="time" id="taskStart" value="09:00" class="p-3 text-sm">
-                    <select id="taskPriority" class="p-3 text-xs">
-                        <option value="normal">عادي</option>
-                        <option value="high">عالي</option>
-                        <option value="urgent">عاجل</option>
-                    </select>
+                    <select id="taskPriority" class="p-3 text-xs"><option value="normal">عادي</option><option value="high">عالي</option><option value="urgent">عاجل</option></select>
                 </div>
+                <select id="taskSubject" class="p-3 text-xs w-full"></select>
                 <button onclick="addTask()" class="btn-primary w-full py-4 uppercase text-xs tracking-widest mt-3">تحديث النظام</button>
             </div>
         </div>
-
         <div class="space-y-2">
             <h3 class="text-[10px] uppercase tracking-[4px] opacity-40 font-bold px-2">القوالب</h3>
             <div id="templateButtonsContainer" class="grid grid-cols-3 gap-2"></div>
             <div class="grid grid-cols-2 gap-2 mt-2">
-                <button onclick="exportData()" class="text-[10px] border border-white/10 py-2 rounded-sm opacity-50 hover:opacity-100">تصدير/استيراد</button>
+                <button onclick="exportData()" class="text-[10px] border border-white/10 py-2 rounded-sm opacity-50 hover:opacity-100">📤 تصدير</button>
+                <button onclick="document.getElementById('importFile').click()" class="text-[10px] border border-white/10 py-2 rounded-sm opacity-50 hover:opacity-100">📥 استيراد</button>
+                <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)">
                 <button onclick="toggleEmergencyMode()" class="text-[10px] border border-red-500/30 py-2 rounded-sm text-red-400/80 hover:bg-red-500/10">⚡ إنقاذ يومي</button>
             </div>
             <button onclick="openModal('moodModal')" class="w-full mt-2 text-[10px] border border-white/10 py-2 rounded-sm opacity-50 hover:opacity-100">😊 سجل المزاج</button>
-            
-            <!-- WhatsApp Contact Buttons (مميزة) -->
             <div class="mt-4 space-y-2">
-                <a href="https://wa.me/96597805334" target="_blank" class="wa-btn w-full py-3 rounded-sm text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg">
-                    <i data-lucide="message-circle" class="w-4 h-4"></i> تواصل مع المؤسس: Sung Jin-Woo
-                </a>
-                <a href="https://wa.me/201055719273" target="_blank" class="wa-btn w-full py-3 rounded-sm text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg">
-                    <i data-lucide="message-circle" class="w-4 h-4"></i> نائب المؤسس: Ayanokouji Kiyotaka
-                </a>
+                <a href="https://wa.me/96597805334" target="_blank" class="wa-btn w-full py-3 rounded-sm text-xs uppercase tracking-widest shadow-lg"><i data-lucide="message-circle" class="w-4 h-4"></i> تواصل مع المؤسس: Sung Jin-Woo</a>
+                <a href="https://wa.me/201055719273" target="_blank" class="wa-btn w-full py-3 rounded-sm text-xs uppercase tracking-widest shadow-lg"><i data-lucide="message-circle" class="w-4 h-4"></i> نائب المؤسس: Ayanokouji Kiyotaka</a>
             </div>
         </div>
     </div>
 
     <div class="lg:col-span-8 main-content">
-        <div class="flex justify-between items-end mb-8 border-b border-white/5 pb-5">
-            <div>
-                <h2 class="text-3xl md:text-4xl font-bold tracking-tighter">الجدول الزمني</h2>
-                <p class="text-xs text-[var(--accent)] mt-2 opacity-60" id="currentDate"></p>
-            </div>
-            <div class="text-left flex items-center gap-4">
-                <div id="liveClock" class="text-xl font-mono tracking-wider text-[var(--accent)]">--:--</div>
-                <div>
-                    <p class="text-[9px] uppercase tracking-widest opacity-40">التقدم</p>
-                    <div class="text-2xl font-bold font-mono" id="progressPercent">0%</div>
-                </div>
-            </div>
+        <div class="flex justify-between items-end mb-8 border-b border-white/5 pb-5 flex-wrap gap-2">
+            <div><h2 class="text-3xl md:text-4xl font-bold tracking-tighter">الجدول الزمني</h2><p class="text-xs text-[var(--accent)] mt-2 opacity-60" id="currentDate"></p></div>
+            <div class="text-left flex items-center gap-4"><div id="liveClock" class="text-xl font-mono tracking-wider text-[var(--accent)]">--:--</div><div><p class="text-[9px] uppercase tracking-widest opacity-40">التقدم</p><div class="text-2xl font-bold font-mono" id="progressPercent">0%</div></div></div>
         </div>
-
-        <div class="mb-6 p-4 quiet-luxury rounded-sm flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <span class="text-sm">⏳ أقرب امتحان:</span>
-                <span id="nextExamName" class="font-bold">لم يحدد</span>
-            </div>
-            <div class="flex items-center gap-3">
-                <span class="text-xl font-bold text-[var(--accent)]" id="examDaysLeft">--</span>
-                <button onclick="openModal('examModal')" class="text-[var(--accent)] hover:text-white"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
-            </div>
-        </div>
-
-        <div id="timelineContainer" class="space-y-4">
-            <div id="timelineList" class="space-y-2 max-h-[500px] overflow-y-auto pr-2"></div>
-            <div id="emptyTimeline" class="py-20 text-center border border-dashed border-white/5 rounded-sm">
-                <i data-lucide="calendar" class="w-10 h-10 mx-auto opacity-20 mb-4"></i>
-                <p class="opacity-30 uppercase tracking-[5px] text-sm">لا توجد مهام مجدولة</p>
-            </div>
-        </div>
-
+        <div class="mb-6 p-4 quiet-luxury rounded-sm flex justify-between items-center flex-wrap gap-2"><div class="flex items-center gap-2"><span class="text-sm">⏳ أقرب امتحان:</span><span id="nextExamName" class="font-bold">لم يحدد</span></div><div class="flex items-center gap-3"><span class="text-xl font-bold text-[var(--accent)]" id="examDaysLeft">--</span><button onclick="openModal('examModal')" class="text-[var(--accent)] hover:text-white"><i data-lucide="edit-2" class="w-4 h-4"></i></button></div></div>
+        <div id="timelineContainer" class="space-y-4"><div id="timelineList" class="space-y-2 max-h-[500px] overflow-y-auto pr-2"></div><div id="emptyTimeline" class="py-20 text-center border border-dashed border-white/5 rounded-sm"><i data-lucide="calendar" class="w-10 h-10 mx-auto opacity-20 mb-4"></i><p class="opacity-30 uppercase tracking-[5px] text-sm">لا توجد مهام مجدولة</p></div></div>
         <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="quiet-luxury p-4 rounded-sm">
-                <h4 class="text-xs uppercase tracking-widest text-[var(--accent)] mb-2">📋 مسودة الغد</h4>
-                <textarea id="tomorrowDraft" class="w-full p-2 text-sm h-20" placeholder="مهام الغد..."></textarea>
-                <button onclick="saveTomorrowDraft()" class="text-[10px] border border-white/10 px-3 py-1 mt-2">حفظ</button>
-            </div>
-            <div class="quiet-luxury p-4 rounded-sm">
-                <h4 class="text-xs uppercase tracking-widest text-[var(--accent)] mb-2">📝 ملاحظات سريعة</h4>
-                <textarea id="quickNotes" class="w-full p-2 text-sm h-20" placeholder="فكرة، ملاحظة..."></textarea>
-                <button onclick="saveQuickNotes()" class="text-[10px] border border-white/10 px-3 py-1 mt-2">حفظ</button>
-            </div>
+            <div class="quiet-luxury p-4 rounded-sm"><div class="flex justify-between items-center mb-2"><h4 class="text-xs uppercase tracking-widest text-[var(--accent)]">📋 مسودة الغد</h4><button onclick="showDraftHistory()" class="text-[10px] border border-white/10 px-2 py-1 rounded-sm">📜 السجل</button></div><textarea id="tomorrowDraft" class="w-full p-2 text-sm h-20" placeholder="مهام الغد..."></textarea><button onclick="saveTomorrowDraft()" class="text-[10px] border border-white/10 px-3 py-1 mt-2">حفظ</button><div id="draftHistoryPanel" class="mt-2 max-h-32 overflow-y-auto text-xs hidden border-t border-white/10 pt-2"></div></div>
+            <div class="quiet-luxury p-4 rounded-sm"><div class="flex justify-between items-center mb-2"><h4 class="text-xs uppercase tracking-widest text-[var(--accent)]">📝 ملاحظات سريعة</h4><button onclick="showNotesHistory()" class="text-[10px] border border-white/10 px-2 py-1 rounded-sm">📜 السجل</button></div><textarea id="quickNotes" class="w-full p-2 text-sm h-20" placeholder="فكرة، ملاحظة..."></textarea><button onclick="saveQuickNotes()" class="text-[10px] border border-white/10 px-3 py-1 mt-2">حفظ</button><div id="notesHistoryPanel" class="mt-2 max-h-32 overflow-y-auto text-xs hidden border-t border-white/10 pt-2"></div></div>
         </div>
-
-        <div class="mt-10">
-            <h3 class="text-xs uppercase tracking-[4px] text-[var(--accent)] font-bold mb-4">التصنيفات النشطة</h3>
-            <div id="catCardsContainer" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
-        </div>
+        <div class="mt-10"><h3 class="text-xs uppercase tracking-[4px] text-[var(--accent)] font-bold mb-4">التصنيفات النشطة (حسب القالب الحالي: <span id="currentTemplateNameDisplay">أزهري</span>)</h3><div id="catCardsContainer" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div></div>
     </div>
 </main>
 
-<footer class="py-12 border-t border-white/5 mt-10 text-center">
-    <p class="text-[9px] uppercase tracking-[6px] text-gray-600 mb-4">Architected & Engineered by</p>
-    <h2 class="signature text-3xl font-bold gold-gradient">AYANOKOUJI KIYOTAKA</h2>
-    <div class="mt-8 flex justify-center gap-4 flex-wrap">
-        <button onclick="changeTheme('matte-gold')" class="text-[10px] border border-[var(--accent)] px-3 py-1 rounded-full">ذهبي</button>
-        <button onclick="changeTheme('cyber-noir')" class="text-[10px] border border-white/10 px-3 py-1 rounded-full">سايبر</button>
-        <button onclick="changeTheme('stealth-white')" class="text-[10px] border border-white/10 px-3 py-1 rounded-full">أبيض</button>
-        <button onclick="installPWA()" class="text-[10px] border border-white/10 px-5 py-2 rounded-full opacity-40 hover:opacity-100">تثبيت التطبيق</button>
-        <button onclick="resetAllData()" class="text-[10px] border border-white/10 px-5 py-2 rounded-full opacity-40 hover:opacity-100 text-red-400/70">إعادة ضبط</button>
-    </div>
-</footer>
+<footer class="py-12 border-t border-white/5 mt-10 text-center"><p class="text-[9px] uppercase tracking-[6px] text-gray-600 mb-4">Architected & Engineered by</p><h2 class="text-3xl font-bold gold-gradient">AYANOKOUJI KIYOTAKA</h2><div class="mt-8 flex justify-center gap-4 flex-wrap"><button onclick="changeTheme('matte-gold')" class="text-[10px] border border-[var(--accent)] px-3 py-1 rounded-full">ذهبي</button><button onclick="changeTheme('cyber-noir')" class="text-[10px] border border-white/10 px-3 py-1 rounded-full">سايبر</button><button onclick="changeTheme('stealth-white')" class="text-[10px] border border-white/10 px-3 py-1 rounded-full">أبيض</button><button onclick="installPWA()" class="text-[10px] border border-white/10 px-5 py-2 rounded-full opacity-40 hover:opacity-100">تثبيت التطبيق</button><button onclick="resetAllData()" class="text-[10px] border border-white/10 px-5 py-2 rounded-full opacity-40 hover:opacity-100 text-red-400/70">إعادة ضبط</button></div></footer>
 
-<!-- Modals with explicit close buttons (X) -->
-<div id="catModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm">
-    <div class="quiet-luxury w-full max-w-md p-6 rounded-sm">
-        <div class="flex justify-between items-center mb-6"><h3 class="text-lg font-bold tracking-widest uppercase">إدارة الأقسام</h3><button onclick="closeModal('catModal')"><i data-lucide="x" class="w-6 h-6"></i></button></div>
-        <div class="flex gap-2 mb-6"><input type="text" id="newCatInput" placeholder="اسم القسم الجديد..." class="flex-1 p-3 text-xs"><button onclick="addNewCat()" class="bg-white text-black px-4 font-bold text-xs uppercase">إضافة</button></div>
-        <div id="catManagerList" class="space-y-2 max-h-64 overflow-y-auto pr-1"></div>
+<!-- Modal Focus Mode -->
+<div id="focusModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm"><div class="quiet-luxury w-full max-w-md p-6 rounded-sm"><div class="flex justify-between items-center mb-6"><h3 class="text-lg font-bold tracking-widest uppercase">🎯 وضع التركيز</h3><button onclick="closeModal('focusModal')"><i data-lucide="x" class="w-6 h-6"></i></button></div><p class="text-xs opacity-70 mb-4">اختر الأقسام التي تريد رؤيتها فقط (الباقي سيُخفى)</p><div id="focusCategoriesList" class="space-y-2 max-h-64 overflow-y-auto mb-4"></div><div class="flex gap-2"><button onclick="applyFocusMode()" class="btn-primary flex-1 py-2 uppercase text-xs">تفعيل</button><button onclick="disableFocusMode()" class="border border-white/20 flex-1 py-2 uppercase text-xs">إلغاء التركيز</button></div></div></div>
+
+<!-- Modal Logs -->
+<div id="logsModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm overflow-y-auto"><div class="quiet-luxury w-full max-w-2xl p-6 rounded-sm max-h-[90vh] overflow-y-auto"><div class="flex justify-between items-center mb-6 sticky top-0 bg-[var(--surface)] z-10"><h3 class="text-lg font-bold tracking-widest uppercase">📋 إدارة السجلات</h3><button onclick="closeModal('logsModal')"><i data-lucide="x" class="w-6 h-6"></i></button></div><div class="mb-6"><h4 class="text-sm font-bold text-[var(--accent)] mb-2">😊 سجل المزاج</h4><div id="moodHistoryList" class="space-y-2 max-h-40 overflow-y-auto border border-white/10 p-2 rounded-sm"></div><button onclick="clearMoodHistory()" class="text-[10px] text-red-400/70 mt-2 border border-red-500/30 px-2 py-1 rounded">مسح كل المزاج</button></div><div class="mb-6"><h4 class="text-sm font-bold text-[var(--accent)] mb-2">📝 سجل الملاحظات السريعة</h4><div id="notesHistoryList" class="space-y-2 max-h-40 overflow-y-auto border border-white/10 p-2 rounded-sm"></div><button onclick="clearNotesHistory()" class="text-[10px] text-red-400/70 mt-2 border border-red-500/30 px-2 py-1 rounded">مسح كل الملاحظات</button></div><div class="mb-6"><h4 class="text-sm font-bold text-[var(--accent)] mb-2">📋 سجل مسودات الغد</h4><div id="draftsHistoryList" class="space-y-2 max-h-40 overflow-y-auto border border-white/10 p-2 rounded-sm"></div><button onclick="clearDraftsHistory()" class="text-[10px] text-red-400/70 mt-2 border border-red-500/30 px-2 py-1 rounded">مسح كل المسودات</button></div><button onclick="closeModal('logsModal')" class="w-full border border-white/10 py-2 uppercase text-xs mt-2">إغلاق</button></div></div>
+
+<!-- Modal Settings -->
+<div id="settingsModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm overflow-y-auto"><div class="quiet-luxury w-full max-w-3xl p-6 rounded-sm max-h-[90vh] overflow-y-auto"><div class="flex justify-between items-center mb-6 sticky top-0 bg-[var(--surface)] z-10"><h3 class="text-lg font-bold tracking-widest uppercase">الإعدادات المتقدمة</h3><button onclick="closeModal('settingsModal')"><i data-lucide="x" class="w-6 h-6"></i></button></div>
+        <div class="mb-6"><label class="block text-sm mb-2">⏰ تنسيق الوقت</label><div class="flex gap-4"><label class="flex items-center gap-2"><input type="radio" name="timeFormat" value="12" onchange="setTimeFormat('12')"> 12 ساعة</label><label class="flex items-center gap-2"><input type="radio" name="timeFormat" value="24" onchange="setTimeFormat('24')"> 24 ساعة</label></div></div>
+        <div class="border-t border-white/10 pt-4 mt-4"><h4 class="text-md font-bold text-[var(--accent)] mb-3">📁 إدارة القوالب ومحتوياتها (الأقسام والمواد)</h4>
+            <div class="mb-4"><label class="block text-sm mb-2">اختر قالباً لتعديل محتوياته:</label><select id="templateSelectForEdit" class="w-full p-2 text-sm mb-3"></select><div class="flex gap-2 mb-4"><input type="text" id="newTemplateNameSetting" placeholder="اسم قالب جديد" class="flex-1 p-2 text-xs"><button onclick="addNewTemplateFromSettings()" class="bg-white text-black px-4 py-2 text-xs uppercase rounded">إضافة قالب</button></div></div>
+            <div class="template-edit-section mb-4"><h5 class="text-sm font-bold mb-2">🏷️ أقسام (تصنيفات) القالب: <span id="selectedTemplateNameForCats">---</span></h5><div id="templateCatsManager" class="space-y-2 max-h-48 overflow-y-auto border border-white/10 p-2 rounded-sm mb-2"></div><div class="flex gap-2"><input type="text" id="newCatForTemplate" placeholder="قسم جديد" class="flex-1 p-2 text-xs"><button onclick="addCategoryToCurrentTemplate()" class="bg-white text-black px-4 py-2 text-xs uppercase rounded">إضافة قسم</button></div></div>
+            <div class="template-edit-section"><h5 class="text-sm font-bold mb-2">📚 مواد القالب: <span id="selectedTemplateNameForSubjects">---</span></h5><div id="templateSubjectsManager" class="space-y-2 max-h-48 overflow-y-auto border border-white/10 p-2 rounded-sm mb-2"></div><div class="flex gap-2"><input type="text" id="newSubjectForTemplate" placeholder="مادة جديدة" class="flex-1 p-2 text-xs"><button onclick="addSubjectToCurrentTemplate()" class="bg-white text-black px-4 py-2 text-xs uppercase rounded">إضافة مادة</button></div></div>
+            <div class="flex gap-2 mt-4"><button onclick="deleteCurrentTemplate()" class="border border-red-500/30 text-red-400/70 px-4 py-2 text-xs uppercase rounded hover:bg-red-500/10">حذف هذا القالب</button><button onclick="closeModal('settingsModal')" class="border border-white/20 px-4 py-2 text-xs uppercase rounded flex-1">إغلاق</button></div>
+        </div>
     </div>
 </div>
 
-<div id="statsModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm">
-    <div class="quiet-luxury w-full max-w-2xl p-6 rounded-sm">
-        <div class="flex justify-between items-center mb-6"><h3 class="text-lg font-bold tracking-widest uppercase">تحليلات الأداء</h3><button onclick="closeModal('statsModal')"><i data-lucide="x" class="w-6 h-6"></i></button></div>
-        <div class="grid grid-cols-2 gap-4 text-sm mb-6"><div class="p-4 bg-white/5 border border-white/5"><p class="opacity-50 mb-1">معدل الإنجاز</p><p class="text-3xl font-bold" id="completionRate">0%</p></div><div class="p-4 bg-white/5 border border-white/5"><p class="opacity-50 mb-1">أفضل يوم</p><p class="text-3xl font-bold" id="bestDay">-</p></div></div>
-        <div id="weeklyChart" class="h-40 flex items-end gap-1 mt-4"></div>
-    </div>
-</div>
+<div id="statsModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm"><div class="quiet-luxury w-full max-w-2xl p-6 rounded-sm"><div class="flex justify-between items-center mb-6"><h3 class="text-lg font-bold tracking-widest uppercase">تحليلات الأداء</h3><button onclick="closeModal('statsModal')"><i data-lucide="x" class="w-6 h-6"></i></button></div><div class="grid grid-cols-2 gap-4 text-sm mb-6"><div class="p-4 bg-white/5 border border-white/5"><p class="opacity-50 mb-1">معدل الإنجاز</p><p class="text-3xl font-bold" id="completionRate">0%</p></div><div class="p-4 bg-white/5 border border-white/5"><p class="opacity-50 mb-1">المهام المتبقية</p><p class="text-3xl font-bold" id="remainingTasks">0</p></div></div><div id="weeklyChart" class="h-40 flex items-end gap-1 mt-4"></div></div></div>
 
-<div id="moodModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm">
-    <div class="quiet-luxury w-full max-w-sm p-6 rounded-sm">
-        <div class="flex justify-between items-center mb-4"><h3 class="text-lg font-bold">كيف تشعر اليوم؟</h3><button onclick="closeModal('moodModal')"><i data-lucide="x" class="w-5 h-5"></i></button></div>
-        <div class="grid grid-cols-5 gap-2 mb-4"><button onclick="setMood(1)" class="text-2xl p-2 border border-white/10 rounded">😞</button><button onclick="setMood(2)" class="text-2xl p-2 border border-white/10 rounded">😐</button><button onclick="setMood(3)" class="text-2xl p-2 border border-white/10 rounded">🙂</button><button onclick="setMood(4)" class="text-2xl p-2 border border-white/10 rounded">😊</button><button onclick="setMood(5)" class="text-2xl p-2 border border-white/10 rounded">🤩</button></div>
-        <textarea id="gratitudeNote" class="w-full p-3 text-sm h-20 mb-4" placeholder="شيء واحد ممتن له اليوم..."></textarea>
-        <button onclick="saveMoodAndGratitude()" class="btn-primary w-full py-3 uppercase text-xs">حفظ</button>
-        <button onclick="closeModal('moodModal')" class="w-full mt-2 text-xs opacity-50">إلغاء</button>
-    </div>
-</div>
+<div id="moodModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm"><div class="quiet-luxury w-full max-w-sm p-6 rounded-sm"><div class="flex justify-between items-center mb-4"><h3 class="text-lg font-bold">كيف تشعر اليوم؟</h3><button onclick="closeModal('moodModal')"><i data-lucide="x" class="w-5 h-5"></i></button></div><div class="grid grid-cols-5 gap-2 mb-4"><button onclick="setMood(1)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">😞</button><button onclick="setMood(2)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">😐</button><button onclick="setMood(3)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">🙂</button><button onclick="setMood(4)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">😊</button><button onclick="setMood(5)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">🤩</button></div><textarea id="gratitudeNote" class="w-full p-3 text-sm h-20 mb-4" placeholder="شيء واحد ممتن له اليوم..."></textarea><button onclick="saveMoodAndGratitude()" class="btn-primary w-full py-3 uppercase text-xs">حفظ اليوم</button></div></div>
 
-<div id="settingsModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm">
-    <div class="quiet-luxury w-full max-w-lg p-6 rounded-sm">
-        <div class="flex justify-between items-center mb-6"><h3 class="text-lg font-bold tracking-widest uppercase">الإعدادات</h3><button onclick="closeModal('settingsModal')"><i data-lucide="x" class="w-6 h-6"></i></button></div>
-        <div class="mb-6"><label class="block text-sm mb-2">تنسيق الوقت</label><div class="flex gap-4"><label class="flex items-center gap-2"><input type="radio" name="timeFormat" value="12" onchange="setTimeFormat('12')"> 12 ساعة</label><label class="flex items-center gap-2"><input type="radio" name="timeFormat" value="24" onchange="setTimeFormat('24')"> 24 ساعة</label></div></div>
-        <div class="mb-6"><label class="block text-sm mb-2">إدارة القوالب</label><div id="templateManagerList" class="space-y-2 mb-3 max-h-40 overflow-y-auto"></div><div class="flex gap-2"><input type="text" id="newTemplateName" placeholder="اسم قالب جديد" class="flex-1 p-2 text-xs"><button onclick="addNewTemplate()" class="bg-white text-black px-4 py-2 text-xs uppercase">إضافة</button></div></div>
-        <button onclick="closeModal('settingsModal')" class="w-full border border-white/10 py-3 uppercase text-xs">إغلاق</button>
-    </div>
-</div>
-
-<div id="examModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm">
-    <div class="quiet-luxury w-full max-w-md p-6 rounded-sm">
-        <div class="flex justify-between items-center mb-6"><h3 class="text-lg font-bold tracking-widest uppercase">إدارة الامتحانات</h3><button onclick="closeModal('examModal')"><i data-lucide="x" class="w-6 h-6"></i></button></div>
-        <div class="mb-6"><div class="grid grid-cols-2 gap-2 mb-2"><input type="text" id="newExamName" placeholder="اسم الامتحان" class="p-2 text-sm"><input type="date" id="newExamDate" class="p-2 text-sm"></div><button onclick="addExam()" class="w-full bg-[var(--accent)] text-black py-2 text-xs uppercase font-bold">إضافة امتحان</button></div>
-        <div class="space-y-2 max-h-64 overflow-y-auto"><p class="text-xs opacity-50 mb-2">الامتحانات المسجلة</p><div id="examsListContainer"></div></div>
-        <button onclick="closeModal('examModal')" class="w-full mt-4 border border-white/10 py-2 uppercase text-xs">إغلاق</button>
-    </div>
-</div>
+<div id="examModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm"><div class="quiet-luxury w-full max-w-md p-6 rounded-sm"><div class="flex justify-between items-center mb-6"><h3 class="text-lg font-bold tracking-widest uppercase">إدارة الامتحانات</h3><button onclick="closeModal('examModal')"><i data-lucide="x" class="w-6 h-6"></i></button></div><div class="mb-6"><div class="grid grid-cols-2 gap-2 mb-2"><input type="text" id="newExamName" placeholder="اسم الامتحان" class="p-2 text-sm"><input type="date" id="newExamDate" class="p-2 text-sm"></div><button onclick="addExam()" class="w-full bg-[var(--accent)] text-black py-2 text-xs uppercase font-bold">إضافة امتحان</button></div><div class="space-y-2 max-h-64 overflow-y-auto"><p class="text-xs opacity-50 mb-2">الامتحانات المسجلة</p><div id="examsListContainer"></div></div><button onclick="closeModal('examModal')" class="w-full mt-4 border border-white/10 py-2 uppercase text-xs">إغلاق</button></div></div>
 
 <script>
-    (function(){
-        "use strict";
-        // ---------- DATA ----------
-        const tips = ["الاستمرارية تتفوق على الذكاء دائماً.","برمج عقلك قبل أن تبرمج الكود.","الراحة جزء من العمل، لا تشعر بالذنب حيالها.","قاعدة الـ 5 دقائق: ابدأ المهمة لـ 5 دقائق فقط.","البيئة المنظمة تعني عقلاً منظماً.","تعلم متى تقول 'لا' للمشتتات.","النجاح هو مجموع خطوات صغيرة تتكرر كل يوم.","في البرمجة، التفكير 80% والكتابة 20%.","طالب العلم لا يشبع، والمبرمج لا يتوقف عن التعلم.","اجعل يومك يبدأ بانتصار صغير."];
-        let tasks = JSON.parse(localStorage.getItem('arise_tasks')) || [];
-        let categories = JSON.parse(localStorage.getItem('arise_cats')) || ['دراسة أزهرية', 'برمجة', 'تطوير ذات', 'قراءة'];
-        let user = JSON.parse(localStorage.getItem('arise_user')) || { xp: 0, level: 1, streak: 0, lastActive: null, badges: [], exams: [], moodLog: [] };
-        let templates = JSON.parse(localStorage.getItem('arise_templates')) || [ { name: 'أزهري', categories: ['قرآن وفقه', 'مواد شرعية', 'مواد عربية', 'برمجة', 'تطوير ذات'] }, { name: 'برمجة', categories: ['Algorithms', 'Frontend', 'Backend', 'System Design', 'English'] }, { name: 'عام', categories: ['دراسة', 'عمل', 'صحة', 'هوايات'] } ];
-        let settings = JSON.parse(localStorage.getItem('arise_settings')) || { timeFormat: '12' };
-        let emergencyMode = false, zenMode = false;
-        let timerInterval = null, timerRunning = false, timeLeft = 25 * 60;
+(function(){
+    "use strict";
+    // ---------- DATA ----------
+    let tasks = JSON.parse(localStorage.getItem('arise_tasks')) || [];
+    let templates = JSON.parse(localStorage.getItem('arise_templates')) || [ 
+        { name: 'أزهري', categories: ['قرآن وفقه', 'مواد شرعية', 'مواد عربية', 'برمجة', 'تطوير ذات'], subjects: ['فقه', 'تفسير', 'حديث', 'نحو', 'بلاغة'] },
+        { name: 'برمجة', categories: ['Algorithms', 'Frontend', 'Backend', 'System Design', 'English'], subjects: ['JavaScript', 'Python', 'React', 'Node.js', 'CS50'] },
+        { name: 'عام', categories: ['دراسة', 'عمل', 'صحة', 'هوايات'], subjects: ['قراءة', 'رياضة', 'تأمل', 'تخطيط'] } 
+    ];
+    let currentTemplateName = localStorage.getItem('arise_currentTemplate') || templates[0].name;
+    let user = JSON.parse(localStorage.getItem('arise_user')) || { xp: 0, level: 1, streak: 0, lastActive: null, badges: [], exams: [], moodLog: [] };
+    let settings = JSON.parse(localStorage.getItem('arise_settings')) || { timeFormat: '24' };
+    let emergencyMode = false, zenMode = false;
+    let focusMode = false, focusCategories = JSON.parse(localStorage.getItem('arise_focus_categories')) || [];
+    let timerInterval = null, timerRunning = false, timeLeft = 25 * 60;
+    let draftHistory = JSON.parse(localStorage.getItem('arise_draft_history')) || [];
+    let notesHistory = JSON.parse(localStorage.getItem('arise_notes_history')) || [];
 
-        function showToast(msg, type='info') { Toastify({ text: msg, duration: 3000, gravity: "bottom", position: "center", style: { background: 'var(--surface)', color: 'var(--text-main)', border: '1px solid var(--accent)' } }).showToast(); }
-        
-        // Welcome
-        if (localStorage.getItem('arise_welcomed')) document.getElementById('welcomeScreen').style.display = 'none';
-        window.closeWelcome = () => { document.getElementById('welcomeScreen').style.display = 'none'; localStorage.setItem('arise_welcomed','1'); };
+    function showToast(msg) { Toastify({ text: msg, duration: 3000, gravity: "bottom", position: "center", style: { background: 'var(--surface)', color: 'var(--text-main)', border: '1px solid var(--accent)' } }).showToast(); }
+    
+    if (localStorage.getItem('arise_welcomed')) document.getElementById('welcomeScreen').style.display = 'none';
+    window.closeWelcome = () => { document.getElementById('welcomeScreen').style.display = 'none'; localStorage.setItem('arise_welcomed','1'); };
 
-        // Init
-        window.onload = () => {
-            updateStreak(); updateDate(); setDailyTip(); renderAll(); startLiveClock(); lucide.createIcons(); initPomodoro(); loadDrafts(); updateExamCountdown(); updateUserDisplay(); renderTemplateButtons(); loadSettings(); checkNightOwl();
-            document.getElementById('searchBox').addEventListener('input', (e) => { if (['ayanokouji','sung jin-woo'].includes(e.target.value.trim().toLowerCase())) { document.body.classList.add('theme-shadow'); setTimeout(()=>document.body.classList.remove('theme-shadow'),30000); showToast('وضع الظل مُفعّل'); } });
+    function saveAll() { 
+        localStorage.setItem('arise_tasks', JSON.stringify(tasks)); 
+        localStorage.setItem('arise_templates', JSON.stringify(templates)); 
+        localStorage.setItem('arise_user', JSON.stringify(user)); 
+        localStorage.setItem('arise_settings', JSON.stringify(settings)); 
+        localStorage.setItem('arise_currentTemplate', currentTemplateName);
+        localStorage.setItem('arise_draft_history', JSON.stringify(draftHistory));
+        localStorage.setItem('arise_notes_history', JSON.stringify(notesHistory));
+        localStorage.setItem('arise_focus_categories', JSON.stringify(focusCategories));
+    }
+
+    function getCurrentTemplate() { return templates.find(t => t.name === currentTemplateName) || templates[0]; }
+    function getCurrentCategories() { return getCurrentTemplate().categories; }
+    function getCurrentSubjects() { return getCurrentTemplate().subjects; }
+
+    function renderCategoryCards() { 
+        const cats = getCurrentCategories();
+        const cnt = {};
+        tasks.forEach(t => { if(t.cat) cnt[t.cat] = (cnt[t.cat] || 0) + 1; });
+        document.getElementById('catCardsContainer').innerHTML = cats.map(c => `<div class="quiet-luxury p-3 flex justify-between"><span class="text-xs font-bold">${c}</span><span class="text-sm font-mono text-[var(--accent)]">${cnt[c] || 0}</span></div>`).join('');
+        document.getElementById('currentTemplateNameDisplay').innerText = currentTemplateName;
+    }
+
+    function renderSelectors() {
+        const cats = getCurrentCategories();
+        const subs = getCurrentSubjects();
+        document.getElementById('taskCat').innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
+        document.getElementById('taskSubject').innerHTML = subs.map(s => `<option value="${s}">${s}</option>`).join('');
+    }
+
+    function renderTemplateSelectForEdit() {
+        const select = document.getElementById('templateSelectForEdit');
+        select.innerHTML = templates.map((t, i) => `<option value="${t.name}" ${t.name === currentTemplateName ? 'selected' : ''}>${t.name}</option>`).join('');
+        select.onchange = () => {
+            currentTemplateName = select.value;
+            saveAll();
+            renderTemplateManagers();
+            renderSelectors();
+            renderCategoryCards();
+            renderTemplateButtons();
+            renderTimeline();
+            showToast(`القالب الحالي: ${currentTemplateName}`);
         };
+        document.getElementById('selectedTemplateNameForCats').innerText = currentTemplateName;
+        document.getElementById('selectedTemplateNameForSubjects').innerText = currentTemplateName;
+    }
 
-        function checkNightOwl() { if (new Date().getHours() === 3) showToast('🦉 الليالي تصنع العظماء... استمر!'); }
+    function renderTemplateManagers() {
+        const template = getCurrentTemplate();
+        document.getElementById('templateCatsManager').innerHTML = template.categories.map((cat, idx) => `
+            <div class="flex justify-between items-center p-2 bg-white/5 border border-white/5 rounded">
+                <input value="${cat}" data-index="${idx}" data-type="cat" class="template-edit-input flex-1 bg-transparent border-none text-sm p-1" />
+                <button onclick="deleteCategoryFromTemplate(${idx})" class="text-red-500/50 mr-2"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>
+        `).join('');
+        document.getElementById('templateSubjectsManager').innerHTML = template.subjects.map((sub, idx) => `
+            <div class="flex justify-between items-center p-2 bg-white/5 border border-white/5 rounded">
+                <input value="${sub}" data-index="${idx}" data-type="sub" class="template-edit-input flex-1 bg-transparent border-none text-sm p-1" />
+                <button onclick="deleteSubjectFromTemplate(${idx})" class="text-red-500/50 mr-2"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>
+        `).join('');
+        document.querySelectorAll('.template-edit-input').forEach(inp => inp.addEventListener('change', handleInlineEdit));
+        lucide.createIcons();
+    }
 
-        // ---------- RENDER & HELPERS ----------
-        function saveAll() { localStorage.setItem('arise_tasks', JSON.stringify(tasks)); localStorage.setItem('arise_cats', JSON.stringify(categories)); localStorage.setItem('arise_user', JSON.stringify(user)); localStorage.setItem('arise_templates', JSON.stringify(templates)); }
-        function updateDate() { document.getElementById('currentDate').innerText = new Date().toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); }
-        function setDailyTip() { document.getElementById('dailyTip').innerText = tips[Math.floor((new Date() - new Date(new Date().getFullYear(),0,0))/86400000) % tips.length]; }
-        function startLiveClock() { const el = document.getElementById('liveClock'); setInterval(() => { const d = new Date(); el.innerText = settings.timeFormat === '12' ? d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true}) : d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false}); },500); }
-        function updateStreak() { const today = new Date().toDateString(); if (user.lastActive !== today) { user.streak = (user.lastActive === new Date(Date.now()-86400000).toDateString()) ? user.streak+1 : 1; user.lastActive = today; saveAll(); } document.getElementById('streakCount').innerText = user.streak; }
-        function addXP(amt) { user.xp += amt; const needed = user.level*100; if (user.xp >= needed) { user.level++; user.xp -= needed; if (user.level%5===0 && !user.badges.includes(`level-${user.level}`)) user.badges.push(`level-${user.level}`); showToast(`🎉 ارتقيت للمستوى ${user.level}!`); } saveAll(); updateUserDisplay(); }
-        function updateUserDisplay() { document.getElementById('userLevelDisplay').innerText = `Lv.${user.level}`; document.getElementById('xpDisplay').innerText = `${user.xp} XP`; document.getElementById('currentLevel').innerText = user.level; const needed = user.level*100; document.getElementById('currentXP').innerText = user.xp; document.getElementById('nextLevelXP').innerText = needed; document.getElementById('xpBar').style.width = `${(user.xp/needed)*100}%`; document.getElementById('badgesContainer').innerHTML = user.badges.map(b=>`<span class="text-xs bg-[var(--accent)]/10 px-2 py-1 rounded border border-[var(--accent)]">🏅 ${b}</span>`).join('')||'<span class="text-xs opacity-30">لا شارات</span>'; }
-
-        function renderAll() {
-            document.getElementById('taskCat').innerHTML = categories.map(c=>`<option value="${c}">${c}</option>`).join('');
-            document.getElementById('catManagerList').innerHTML = categories.map((c,i)=>`<div class="flex justify-between items-center p-3 bg-white/5 border border-white/5"><span>${c}</span><button onclick="deleteCategory(${i})" class="text-red-500/50"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`).join('');
-            renderTimeline(); renderCategoryCards(); renderSummaryStats(); renderTemplateButtons(); renderTemplateManager(); renderExamsList(); lucide.createIcons(); saveAll();
+    function handleInlineEdit(e) {
+        const inp = e.target;
+        const idx = parseInt(inp.dataset.index);
+        const type = inp.dataset.type;
+        const newVal = inp.value.trim();
+        const template = getCurrentTemplate();
+        if(type === 'cat') {
+            const oldVal = template.categories[idx];
+            if(newVal && newVal !== oldVal) {
+                template.categories[idx] = newVal;
+                tasks.forEach(t => { if(t.cat === oldVal) t.cat = newVal; });
+                if(focusMode && focusCategories.includes(oldVal)) focusCategories = focusCategories.map(f => f === oldVal ? newVal : f);
+                saveAll(); renderSelectors(); renderCategoryCards(); renderTemplateManagers(); showToast('تم تعديل القسم');
+            } else inp.value = oldVal;
+        } else if(type === 'sub') {
+            const oldVal = template.subjects[idx];
+            if(newVal && newVal !== oldVal) {
+                template.subjects[idx] = newVal;
+                tasks.forEach(t => { if(t.subject === oldVal) t.subject = newVal; });
+                saveAll(); renderSelectors(); renderTemplateManagers(); showToast('تم تعديل المادة');
+            } else inp.value = oldVal;
         }
+    }
 
-        function formatTime(t) { if(!t||t==='--:--') return '--:--'; const [h,m]=t.split(':').map(Number); const d=new Date(); d.setHours(h,m,0); return settings.timeFormat==='12'? d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true}) : d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false}); }
-        function calculateEndTime(start,dur){ if(!start) return '--:--'; const [h,m]=start.split(':').map(Number); const total=h*60+m+parseInt(dur); return `${String(Math.floor(total/60)%24).padStart(2,'0')}:${String(total%60).padStart(2,'0')}`; }
+    window.deleteCategoryFromTemplate = function(idx) {
+        const template = getCurrentTemplate();
+        const cat = template.categories[idx];
+        if(tasks.filter(t => t.cat === cat).length > 0 && !confirm(`⚠️ هناك مهام مرتبطة بهذا القسم. حذفه سيؤثر عليها. هل تريد المتابعة؟`)) return;
+        template.categories.splice(idx, 1); saveAll(); renderSelectors(); renderCategoryCards(); renderTemplateManagers(); showToast(`تم حذف القسم "${cat}"`);
+    };
 
-        function renderTimeline() {
-            const list = document.getElementById('timelineList'), empty = document.getElementById('emptyTimeline');
-            let show = tasks; if(emergencyMode) show = tasks.filter(t=>!t.completed).sort((a,b)=>({urgent:1,high:2,normal:3}[a.priority]||3)-({urgent:1,high:2,normal:3}[b.priority]||3)).slice(0,3);
-            if(!show.length) { list.innerHTML=''; empty.classList.remove('hidden'); return; } empty.classList.add('hidden');
-            list.innerHTML = show.sort((a,b)=>(a.start||'00:00').localeCompare(b.start||'00:00')).map(t=>`<div class="quiet-luxury p-4 flex flex-wrap md:flex-nowrap items-center gap-3 ${t.completed?'opacity-60 line-through':''} ${t.priority==='high'?'border-r-4 border-orange-400':t.priority==='urgent'?'border-r-4 border-red-500':''}"><div class="w-20 text-center"><span class="text-xs opacity-60">${formatTime(t.start)}</span><span class="block text-lg font-bold text-[var(--accent)]">${formatTime(calculateEndTime(t.start,t.dur))}</span></div><div class="flex-1"><h4 class="font-bold text-sm">${t.name}</h4><div class="flex gap-3 text-[10px] opacity-50"><span>${t.cat}</span><span>${t.dur} دقيقة</span></div></div><div class="flex items-center gap-2"><button onclick="toggleTaskCompletion(${t.id})" class="p-2"><i data-lucide="${t.completed?'check-circle':'circle'}" class="w-5 h-5 ${t.completed?'text-green-400':''}"></i></button><button onclick="deleteTask(${t.id})" class="p-2"><i data-lucide="trash-2" class="w-4 h-4 text-red-400/60"></i></button></div></div>`).join('');
-            lucide.createIcons();
+    window.deleteSubjectFromTemplate = function(idx) {
+        const template = getCurrentTemplate();
+        const sub = template.subjects[idx];
+        if(tasks.filter(t => t.subject === sub).length > 0 && !confirm(`⚠️ هناك مهام مرتبطة بهذه المادة. حذفها سيؤثر عليها. هل تريد المتابعة؟`)) return;
+        template.subjects.splice(idx, 1); saveAll(); renderSelectors(); renderTemplateManagers(); showToast(`تم حذف المادة "${sub}"`);
+    };
+
+    window.addCategoryToCurrentTemplate = function() {
+        const newCat = document.getElementById('newCatForTemplate').value.trim();
+        const template = getCurrentTemplate();
+        if(newCat && !template.categories.includes(newCat)) {
+            template.categories.push(newCat); saveAll(); renderSelectors(); renderCategoryCards(); renderTemplateManagers();
+            document.getElementById('newCatForTemplate').value = ''; showToast(`تم إضافة قسم "${newCat}"`);
+        } else showToast('القسم موجود أو فارغ');
+    };
+
+    window.addSubjectToCurrentTemplate = function() {
+        const newSub = document.getElementById('newSubjectForTemplate').value.trim();
+        const template = getCurrentTemplate();
+        if(newSub && !template.subjects.includes(newSub)) {
+            template.subjects.push(newSub); saveAll(); renderSelectors(); renderTemplateManagers();
+            document.getElementById('newSubjectForTemplate').value = ''; showToast(`تم إضافة مادة "${newSub}"`);
+        } else showToast('المادة موجودة أو فارغة');
+    };
+
+    window.addNewTemplateFromSettings = function() {
+        const newName = document.getElementById('newTemplateNameSetting').value.trim();
+        if(newName && !templates.find(t => t.name === newName)) {
+            const currentTemp = getCurrentTemplate();
+            templates.push({ name: newName, categories: [...currentTemp.categories], subjects: [...currentTemp.subjects] });
+            document.getElementById('newTemplateNameSetting').value = ''; saveAll();
+            renderTemplateSelectForEdit(); renderTemplateButtons(); renderTemplateManagers(); showToast(`تم إضافة قالب "${newName}"`);
+        } else showToast('الاسم موجود أو غير صالح');
+    };
+
+    window.deleteCurrentTemplate = function() {
+        if(templates.length <= 1) return showToast('لا يمكن حذف القالب الوحيد');
+        if(confirm(`حذف قالب "${currentTemplateName}"؟ المهام المرتبطة به ستبقى.`)) {
+            templates = templates.filter(t => t.name !== currentTemplateName);
+            currentTemplateName = templates[0].name; saveAll();
+            renderTemplateSelectForEdit(); renderTemplateButtons(); renderSelectors(); renderCategoryCards(); renderTemplateManagers(); renderTimeline(); showToast('تم حذف القالب');
         }
-        function renderCategoryCards() { const cnt={}; tasks.forEach(t=>cnt[t.cat]=(cnt[t.cat]||0)+1); document.getElementById('catCardsContainer').innerHTML = categories.map(c=>`<div class="quiet-luxury p-3 flex justify-between"><span class="text-xs font-bold">${c}</span><span class="text-sm font-mono text-[var(--accent)]">${cnt[c]||0}</span></div>`).join(''); }
-        function renderSummaryStats() { const total=tasks.length, comp=tasks.filter(t=>t.completed).length, plan=tasks.reduce((s,t)=>s+(t.dur||0),0), spent=tasks.filter(t=>t.completed).reduce((s,t)=>s+(t.dur||0),0), pct=total?Math.round(comp/total*100):0; document.getElementById('totalTasksCount').innerText=total; document.getElementById('completedTasksCount').innerText=comp; document.getElementById('totalPlannedTime').innerText=(plan/60).toFixed(1)+' س'; document.getElementById('totalSpentTime').innerText=(spent/60).toFixed(1)+' س'; document.getElementById('progressBar').style.width=pct+'%'; document.getElementById('progressPercent').innerText=pct+'%'; }
-        function renderTemplateButtons() { document.getElementById('templateButtonsContainer').innerHTML = templates.map(t=>`<button onclick="applyTemplate('${t.name}')" class="text-[11px] border border-white/10 py-3 rounded-sm hover:border-[var(--accent)]">${t.name}</button>`).join(''); }
-        function renderTemplateManager() { const cont=document.getElementById('templateManagerList'); cont.innerHTML = templates.map((t,i)=>`<div class="flex items-center gap-2 p-2 bg-white/5"><input value="${t.name}" data-index="${i}" class="template-name-input flex-1 p-1 text-xs bg-transparent border border-white/20" /><button onclick="deleteTemplate(${i})" class="text-red-500/50"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`).join(''); document.querySelectorAll('.template-name-input').forEach(inp=>inp.addEventListener('change',e=>{ templates[e.target.dataset.index].name=e.target.value; saveAll(); renderTemplateButtons(); })); lucide.createIcons(); }
-        function renderExamsList() { const cont=document.getElementById('examsListContainer'); if(!user.exams.length) { cont.innerHTML='<p class="text-xs opacity-30 text-center py-4">لا امتحانات</p>'; return; } cont.innerHTML = user.exams.sort((a,b)=>new Date(a.date)-new Date(b.date)).map((e,i)=>{ const d=new Date(e.date), days=Math.ceil((d-new Date())/(86400000)); return `<div class="flex justify-between items-center p-2 bg-white/5"><div><span>${e.name}</span><span class="text-[10px] opacity-50 mr-2">${d.toLocaleDateString('ar-EG')} (${days>0?days+' يوم':days===0?'اليوم!':'انتهى'})</span></div><button onclick="deleteExam(${i})" class="text-red-500/50"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`; }).join(''); lucide.createIcons(); }
-        function updateExamCountdown() { if(!user.exams.length) { document.getElementById('nextExamName').innerText='لم يحدد'; document.getElementById('examDaysLeft').innerText='--'; return; } const next=user.exams.sort((a,b)=>new Date(a.date)-new Date(b.date))[0], days=Math.ceil((new Date(next.date)-new Date())/(86400000)); document.getElementById('nextExamName').innerText=next.name; document.getElementById('examDaysLeft').innerText=days>0?`${days} يوم`:days===0?'اليوم!':'انتهى'; }
+    };
 
-        // ---------- ACTIONS ----------
-        window.addTask = function() { const name=document.getElementById('taskName').value.trim(), cat=document.getElementById('taskCat').value, dur=document.getElementById('taskDur').value, start=document.getElementById('taskStart').value, pri=document.getElementById('taskPriority').value; if(!name||!dur) return showToast('الاسم والمدة مطلوبان'); tasks.push({ id:Date.now()+Math.random(), name, cat, dur:parseInt(dur), start, priority:pri, completed:false }); document.getElementById('taskName').value=''; renderAll(); showToast('تمت إضافة المهمة'); };
-        window.toggleTaskCompletion = function(id) { const t=tasks.find(t=>t.id===id); if(t) { t.completed=!t.completed; if(t.completed) addXP(10+(t.priority==='high'?5:10)); renderAll(); } };
-        window.deleteTask = function(id) { tasks=tasks.filter(t=>t.id!==id); renderAll(); };
-        window.addNewCat = function() { const v=document.getElementById('newCatInput').value.trim(); if(v && !categories.includes(v)) { categories.push(v); document.getElementById('newCatInput').value=''; renderAll(); } };
-        window.deleteCategory = function(i) { if(confirm('حذف القسم؟')) { const n=categories[i]; tasks=tasks.filter(t=>t.cat!==n); categories.splice(i,1); renderAll(); } };
-        window.applyTemplate = function(name) { const t=templates.find(t=>t.name===name); if(t) { categories=[...t.categories]; renderAll(); showToast(`قالب ${name} مفعّل`); } };
-        window.addNewTemplate = function() { const n=document.getElementById('newTemplateName').value.trim(); if(n && !templates.find(t=>t.name===n)) { templates.push({ name:n, categories:[...categories] }); document.getElementById('newTemplateName').value=''; saveAll(); renderTemplateButtons(); renderTemplateManager(); } };
-        window.deleteTemplate = function(i) { if(templates.length<=1) return showToast('يجب بقاء قالب واحد'); templates.splice(i,1); saveAll(); renderTemplateButtons(); renderTemplateManager(); };
-        window.toggleEmergencyMode = function() { emergencyMode=!emergencyMode; document.getElementById('emergencyBanner').classList.toggle('hidden',!emergencyMode); renderTimeline(); };
-        window.toggleZenMode = function() { zenMode=!zenMode; document.body.classList.toggle('zen-mode',zenMode); };
-        window.addExam = function() { const n=document.getElementById('newExamName').value.trim(), d=document.getElementById('newExamDate').value; if(!n||!d) return showToast('أدخل البيانات'); user.exams.push({name:n,date:d}); saveAll(); renderExamsList(); updateExamCountdown(); document.getElementById('newExamName').value=''; document.getElementById('newExamDate').value=''; showToast('تمت إضافة الامتحان'); };
-        window.deleteExam = function(i) { user.exams.splice(i,1); saveAll(); renderExamsList(); updateExamCountdown(); };
-        window.saveTomorrowDraft = function() { localStorage.setItem('arise_draft', document.getElementById('tomorrowDraft').value); showToast('تم حفظ المسودة'); };
-        window.saveQuickNotes = function() { localStorage.setItem('arise_notes', document.getElementById('quickNotes').value); showToast('تم حفظ الملاحظات'); };
-        function loadDrafts() { document.getElementById('tomorrowDraft').value = localStorage.getItem('arise_draft')||''; document.getElementById('quickNotes').value = localStorage.getItem('arise_notes')||''; }
-        window.setMood = (v) => window._mood=v;
-        window.saveMoodAndGratitude = function() { user.moodLog.push({ date: new Date().toISOString(), mood: window._mood||3, gratitude: document.getElementById('gratitudeNote').value }); saveAll(); closeModal('moodModal'); showToast('تم تسجيل المزاج'); };
-        window.setTimeFormat = function(f) { settings.timeFormat=f; localStorage.setItem('arise_settings', JSON.stringify(settings)); startLiveClock(); renderTimeline(); };
-        function loadSettings() { document.querySelector(`input[name="timeFormat"][value="${settings.timeFormat}"]`).checked=true; }
-        window.changeTheme = function(t) { document.body.className = document.body.className.replace(/theme-\S+/g,''); document.body.classList.add(`theme-${t}`); localStorage.setItem('arise_theme',t); };
-        window.openModal = (id) => { document.getElementById(id).classList.remove('hidden'); document.getElementById(id).classList.add('flex'); if(id==='statsModal') { document.getElementById('completionRate').innerText = tasks.length?Math.round(tasks.filter(t=>t.completed).length/tasks.length*100)+'%':'0%'; document.getElementById('weeklyChart').innerHTML = ['أحد','إثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'].map(d=>`<div class="flex-1 flex flex-col items-center"><div class="w-full bg-white/10 h-20 relative"><div class="absolute bottom-0 w-full bg-[var(--accent)]" style="height:${Math.floor(Math.random()*10)*8}%"></div></div><span class="text-[8px] mt-1">${d}</span></div>`).join(''); } if(id==='settingsModal') renderTemplateManager(); if(id==='examModal') renderExamsList(); };
-        window.closeModal = (id) => { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); };
-        window.shareAchievement = function() { html2canvas(document.querySelector('.quiet-luxury'),{backgroundColor:getComputedStyle(document.body).getPropertyValue('--bg')}).then(c=>c.toBlob(b=>{ const f=new File([b],'arise.png'); if(navigator.share) navigator.share({files:[f],title:'Arise OS',text:'إنجازي اليوم'}); else { const a=document.createElement('a'); a.download='arise.png'; a.href=c.toDataURL(); a.click(); } })); };
-        window.exportData = function() { const d={ tasks, categories, user, templates }; const b=new Blob([JSON.stringify(d)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=`arise_${new Date().toISOString().slice(0,10)}.json`; a.click(); };
-        window.resetAllData = function() { if(confirm('حذف كل البيانات؟')) { tasks=[]; categories=['دراسة أزهرية','برمجة','تطوير ذات','قراءة']; user={xp:0,level:1,streak:0,lastActive:null,badges:[],exams:[],moodLog:[]}; templates=[{name:'أزهري',categories:['قرآن وفقه','مواد شرعية','مواد عربية','برمجة','تطوير ذات']},{name:'برمجة',categories:['Algorithms','Frontend','Backend','System Design','English']},{name:'عام',categories:['دراسة','عمل','صحة','هوايات']}]; renderAll(); updateUserDisplay(); updateExamCountdown(); showToast('تم إعادة الضبط'); } };
-        window.installPWA = () => { showToast('من Chrome: القائمة > "تثبيت التطبيق"'); closeWelcome(); };
+    function renderTemplateButtons() {
+        document.getElementById('templateButtonsContainer').innerHTML = templates.map(t => `<button onclick="switchTemplate('${t.name}')" class="text-[11px] border border-white/10 py-3 rounded-sm hover:border-[var(--accent)] ${currentTemplateName===t.name ? 'border-[var(--accent)] bg-white/5' : ''}">${t.name}</button>`).join('');
+    }
+    window.switchTemplate = function(name) {
+        currentTemplateName = name; saveAll();
+        renderTemplateButtons(); renderSelectors(); renderCategoryCards(); renderTimeline(); renderTemplateSelectForEdit(); renderTemplateManagers(); showToast(`القالب الحالي: ${name}`);
+    };
 
-        // Pomodoro
-        function initPomodoro() { document.getElementById('timerToggleBtn').onclick = ()=> { if(timerRunning) { clearInterval(timerInterval); timerToggleBtn.innerText='بدء'; } else { timerInterval = setInterval(()=>{ if(timeLeft<=0) { clearInterval(timerInterval); timerRunning=false; timerToggleBtn.innerText='بدء'; new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YVgAAAAAAAADAAgADwAQAA8AEAAPABAAEAAQAA8AEAAPABAADwAQAA8AEAAPABAADwAQAA8AEAAPABAADwAQAA8AEAAPAA8AAA==').play().catch(()=>{}); showToast('⏰ انتهت الجلسة! خذ استراحة.'); resetTimer(); return; } timeLeft--; document.getElementById('pomodoroDisplay').innerText = `${String(Math.floor(timeLeft/60)).padStart(2,'0')}:${String(timeLeft%60).padStart(2,'0')}`; },1000); timerToggleBtn.innerText='إيقاف'; } timerRunning=!timerRunning; }; document.getElementById('timerResetBtn').onclick = ()=> { clearInterval(timerInterval); timerRunning=false; timeLeft=25*60; document.getElementById('pomodoroDisplay').innerText='25:00'; timerToggleBtn.innerText='بدء'; }; }
-        function resetTimer() { clearInterval(timerInterval); timerRunning=false; timeLeft=25*60; document.getElementById('pomodoroDisplay').innerText='25:00'; timerToggleBtn.innerText='بدء'; }
+    function formatTime(t) { if(!t) return '--:--'; const [h,m]=t.split(':').map(Number); const d=new Date(); d.setHours(h,m,0); return settings.timeFormat==='12'? d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true}) : d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false}); }
+    function calculateEndTime(start,dur){ const [h,m]=start.split(':').map(Number); const total=h*60+m+dur; return `${String(Math.floor(total/60)%24).padStart(2,'0')}:${String(total%60).padStart(2,'0')}`; }
+    
+    function renderTimeline() {
+        let show = tasks;
+        if(emergencyMode) show = tasks.filter(t=>!t.completed).sort((a,b)=>({urgent:1,high:2,normal:3}[a.priority]||3)-({urgent:1,high:2,normal:3}[b.priority]||3)).slice(0,3);
+        else if(focusMode && focusCategories.length) show = tasks.filter(t => focusCategories.includes(t.cat));
+        const list = document.getElementById('timelineList'), empty = document.getElementById('emptyTimeline');
+        if(!show.length) { list.innerHTML=''; empty.classList.remove('hidden'); return; } empty.classList.add('hidden');
+        list.innerHTML = show.sort((a,b)=>(a.start||'00:00').localeCompare(b.start||'00:00')).map(t=>`<div class="quiet-luxury p-4 flex flex-wrap md:flex-nowrap items-center gap-3 ${t.completed?'opacity-60 line-through':''} ${t.priority==='high'?'border-r-4 border-orange-400':t.priority==='urgent'?'border-r-4 border-red-500':''}"><div class="w-20 text-center"><span class="text-xs opacity-60">${formatTime(t.start)}</span><span class="block text-lg font-bold text-[var(--accent)]">${formatTime(calculateEndTime(t.start,t.dur))}</span></div><div class="flex-1"><h4 class="font-bold text-sm">${t.name}</h4><div class="flex gap-3 text-[10px] opacity-50"><span>${t.cat}</span><span>${t.subject || ''}</span><span>${t.dur} دقيقة</span></div></div><div class="flex items-center gap-2"><button onclick="toggleTaskCompletion(${t.id})" class="p-2"><i data-lucide="${t.completed?'check-circle':'circle'}" class="w-5 h-5 ${t.completed?'text-green-400':''}"></i></button><button onclick="deleteTask(${t.id})" class="p-2"><i data-lucide="trash-2" class="w-4 h-4 text-red-400/60"></i></button></div></div>`).join('');
+        lucide.createIcons();
+    }
 
-        // Expose for inline
-        window.deleteTask = deleteTask; window.toggleTaskCompletion = toggleTaskCompletion; window.deleteCategory = deleteCategory;
+    window.addTask = function() { 
+        const name=document.getElementById('taskName').value.trim(), cat=document.getElementById('taskCat').value, dur=parseInt(document.getElementById('taskDur').value), start=document.getElementById('taskStart').value, pri=document.getElementById('taskPriority').value, subject=document.getElementById('taskSubject').value; 
+        if(!name||!dur) return showToast('الاسم والمدة مطلوبان'); 
+        tasks.push({ id:Date.now()+Math.random(), name, cat, subject, dur, start, priority:pri, completed:false }); 
+        document.getElementById('taskName').value=''; renderAll(); showToast('تمت إضافة المهمة'); 
+    };
+    window.toggleTaskCompletion = function(id) { const t=tasks.find(t=>t.id===id); if(t) { t.completed=!t.completed; if(t.completed) { addXP(10+(t.priority==='high'?5:10)); t.completedDate = new Date().toISOString(); } else t.completedDate=null; renderAll(); } };
+    window.deleteTask = function(id) { tasks=tasks.filter(t=>t.id!==id); renderAll(); };
+    
+    function addXP(amt) { user.xp += amt; const needed = user.level*100; if (user.xp >= needed) { user.level++; user.xp -= needed; if (user.level%5===0 && !user.badges.includes(`level-${user.level}`)) user.badges.push(`level-${user.level}`); showToast(`🎉 ارتقيت للمستوى ${user.level}!`); } saveAll(); updateUserDisplay(); }
+    function updateUserDisplay() { document.getElementById('userLevelDisplay').innerText = `Lv.${user.level}`; document.getElementById('xpDisplay').innerText = `${user.xp} XP`; document.getElementById('currentLevel').innerText = user.level; const needed = user.level*100; document.getElementById('currentXP').innerText = user.xp; document.getElementById('nextLevelXP').innerText = needed; document.getElementById('xpBar').style.width = `${(user.xp/needed)*100}%`; document.getElementById('badgesContainer').innerHTML = user.badges.map(b=>`<span class="text-xs bg-[var(--accent)]/10 px-2 py-1 rounded border border-[var(--accent)]">🏅 ${b}</span>`).join('')||'<span class="text-xs opacity-30">لا شارات</span>'; }
+
+    function renderFocusModal() {
+        document.getElementById('focusCategoriesList').innerHTML = getCurrentCategories().map(c => `<label class="flex items-center gap-2 p-2 bg-white/5 rounded"><input type="checkbox" value="${c}" ${focusCategories.includes(c) ? 'checked' : ''} class="focus-cb"> <span>${c}</span></label>`).join('');
+    }
+    window.applyFocusMode = function() {
+        focusCategories = Array.from(document.querySelectorAll('#focusCategoriesList .focus-cb')).filter(cb => cb.checked).map(cb => cb.value);
+        focusMode = focusCategories.length > 0;
+        document.getElementById('focusBanner').classList.toggle('hidden', !focusMode);
+        showToast(focusMode ? `وضع التركيز مفعل: ${focusCategories.join(', ')}` : 'تم إلغاء وضع التركيز');
+        saveAll(); closeModal('focusModal'); renderTimeline();
+    };
+    window.disableFocusMode = function() { focusMode = false; focusCategories = []; document.getElementById('focusBanner').classList.add('hidden'); saveAll(); closeModal('focusModal'); renderTimeline(); showToast('تم إلغاء وضع التركيز'); };
+
+    function renderExamsList() { 
+        const cont=document.getElementById('examsListContainer'); 
+        if(!user.exams.length) { cont.innerHTML='<p class="text-xs opacity-30 text-center py-4">لا امتحانات</p>'; return; } 
+        cont.innerHTML = user.exams.sort((a,b)=>new Date(a.date)-new Date(b.date)).map((e,i)=>{ 
+            const d=new Date(e.date), days=Math.ceil((d-new Date())/(86400000));
+            return `<div class="flex justify-between items-center p-2 bg-white/5"><div><span>${e.name}</span><span class="text-[10px] opacity-50 mr-2">${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} (${days>0?days+' يوم':days===0?'اليوم!':'انتهى'})</span></div><button onclick="deleteExam(${i})" class="text-red-500/50"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`; 
+        }).join(''); 
+        lucide.createIcons(); 
+    }
+    function updateExamCountdown() { 
+        if(!user.exams.length) { document.getElementById('nextExamName').innerText='لم يحدد'; document.getElementById('examDaysLeft').innerText='--'; return; } 
+        const next=user.exams.sort((a,b)=>new Date(a.date)-new Date(b.date))[0], days=Math.ceil((new Date(next.date)-new Date())/(86400000)); 
+        document.getElementById('nextExamName').innerText=next.name; 
+        document.getElementById('examDaysLeft').innerText=days>0?`${days} يوم`:days===0?'اليوم!':'انتهى'; 
+    }
+    window.addExam = function() { 
+        const n=document.getElementById('newExamName').value.trim(), d=document.getElementById('newExamDate').value; 
+        if(!n||!d) return showToast('أدخل البيانات'); 
+        user.exams.push({name:n,date:d}); saveAll(); renderExamsList(); updateExamCountdown(); 
+        document.getElementById('newExamName').value=''; document.getElementById('newExamDate').value=''; closeModal('examModal'); showToast('تمت إضافة الامتحان'); 
+    };
+    window.deleteExam = function(i) { user.exams.splice(i,1); saveAll(); renderExamsList(); updateExamCountdown(); };
+
+    let currentMood = 3;
+    window.setMood = function(v) { currentMood=v; document.querySelectorAll('.mood-btn').forEach(btn=>btn.classList.remove('border-[var(--accent)]')); if(event && event.target) event.target.classList.add('border-[var(--accent)]'); };
+    window.saveMoodAndGratitude = function() { 
+        user.moodLog.push({ date: new Date().toISOString(), mood: currentMood, gratitude: document.getElementById('gratitudeNote').value }); 
+        saveAll(); closeModal('moodModal'); showToast('تم تسجيل المزاج'); document.getElementById('gratitudeNote').value=''; currentMood=3; 
+    };
+
+    window.saveTomorrowDraft = function() { const val=document.getElementById('tomorrowDraft').value; if(val.trim()) { draftHistory.unshift({ text:val, date:new Date().toISOString() }); if(draftHistory.length>50) draftHistory.pop(); saveAll(); } localStorage.setItem('arise_draft',val); showToast('تم حفظ المسودة'); };
+    window.saveQuickNotes = function() { const val=document.getElementById('quickNotes').value; if(val.trim()) { notesHistory.unshift({ text:val, date:new Date().toISOString() }); if(notesHistory.length>50) notesHistory.pop(); saveAll(); } localStorage.setItem('arise_notes',val); showToast('تم حفظ الملاحظات'); };
+    function loadDrafts() { document.getElementById('tomorrowDraft').value = localStorage.getItem('arise_draft')||''; document.getElementById('quickNotes').value = localStorage.getItem('arise_notes')||''; }
+    window.showDraftHistory = function() { const panel=document.getElementById('draftHistoryPanel'); if(!draftHistory.length) panel.innerHTML='<p class="opacity-50 text-center">لا توجد مسودات سابقة</p>'; else panel.innerHTML = draftHistory.map((e,i)=>`<div class="border-b border-white/10 py-1 flex justify-between items-center"><span class="text-xs truncate max-w-[150px]">${e.text.substring(0,40)}</span><div><button onclick="restoreDraft(${i})" class="text-[10px] text-[var(--accent)] ml-2">استعادة</button><button onclick="deleteDraftItem(${i})" class="text-[10px] text-red-400/70">حذف</button></div></div>`).join('')+'<button onclick="clearAllDrafts()" class="text-[10px] text-red-400/70 w-full text-center mt-2 border-t border-white/10 pt-1">مسح كل المسودات</button>'; panel.classList.remove('hidden'); };
+    window.restoreDraft = function(i) { document.getElementById('tomorrowDraft').value = draftHistory[i].text; document.getElementById('draftHistoryPanel').classList.add('hidden'); };
+    window.deleteDraftItem = function(i) { draftHistory.splice(i,1); saveAll(); showDraftHistory(); };
+    window.clearAllDrafts = function() { if(confirm('مسح كل مسودات الغد؟')) { draftHistory=[]; saveAll(); showDraftHistory(); showToast('تم مسح الكل'); } };
+    window.showNotesHistory = function() { const panel=document.getElementById('notesHistoryPanel'); if(!notesHistory.length) panel.innerHTML='<p class="opacity-50 text-center">لا توجد ملاحظات سابقة</p>'; else panel.innerHTML = notesHistory.map((e,i)=>`<div class="border-b border-white/10 py-1 flex justify-between items-center"><span class="text-xs truncate max-w-[150px]">${e.text.substring(0,40)}</span><div><button onclick="restoreNote(${i})" class="text-[10px] text-[var(--accent)] ml-2">استعادة</button><button onclick="deleteNoteItem(${i})" class="text-[10px] text-red-400/70">حذف</button></div></div>`).join('')+'<button onclick="clearAllNotes()" class="text-[10px] text-red-400/70 w-full text-center mt-2 border-t border-white/10 pt-1">مسح كل الملاحظات</button>'; panel.classList.remove('hidden'); };
+    window.restoreNote = function(i) { document.getElementById('quickNotes').value = notesHistory[i].text; document.getElementById('notesHistoryPanel').classList.add('hidden'); };
+    window.deleteNoteItem = function(i) { notesHistory.splice(i,1); saveAll(); showNotesHistory(); };
+    window.clearAllNotes = function() { if(confirm('مسح كل الملاحظات؟')) { notesHistory=[]; saveAll(); showNotesHistory(); showToast('تم مسح الكل'); } };
+
+    function renderLogsModal() {
+        const moodEmojis = {1:'😞',2:'😐',3:'🙂',4:'😊',5:'🤩'};
+        document.getElementById('moodHistoryList').innerHTML = user.moodLog.slice().reverse().map((log,idx) => `<div class="flex justify-between items-center border-b border-white/10 py-1"><span>${new Date(log.date).toLocaleDateString('en-US')} ${moodEmojis[log.mood]||'🙂'} ${log.gratitude ? '- '+log.gratitude.substring(0,30) : ''}</span><button onclick="deleteMoodItem(${user.moodLog.length-1-idx})" class="text-red-400/70 text-[10px]">حذف</button></div>`).join('');
+        document.getElementById('notesHistoryList').innerHTML = notesHistory.map((n,i)=>`<div class="flex justify-between items-center border-b border-white/10 py-1"><span class="truncate max-w-[200px]">${n.text.substring(0,40)}</span><button onclick="deleteNoteItem(${i})" class="text-red-400/70 text-[10px]">حذف</button></div>`).join('');
+        document.getElementById('draftsHistoryList').innerHTML = draftHistory.map((d,i)=>`<div class="flex justify-between items-center border-b border-white/10 py-1"><span class="truncate max-w-[200px]">${d.text.substring(0,40)}</span><button onclick="deleteDraftItem(${i})" class="text-red-400/70 text-[10px]">حذف</button></div>`).join('');
+    }
+    window.deleteMoodItem = function(idx) { user.moodLog.splice(idx,1); saveAll(); renderLogsModal(); showToast('تم حذف المزاج'); };
+    window.clearMoodHistory = function() { if(confirm('مسح كل سجل المزاج؟')) { user.moodLog = []; saveAll(); renderLogsModal(); showToast('تم مسح الكل'); } };
+    window.clearNotesHistory = function() { if(confirm('مسح كل الملاحظات؟')) { notesHistory = []; saveAll(); renderLogsModal(); showToast('تم مسح الكل'); } };
+    window.clearDraftsHistory = function() { if(confirm('مسح كل المسودات؟')) { draftHistory = []; saveAll(); renderLogsModal(); showToast('تم مسح الكل'); } };
+
+    function updateStreak() { const today = new Date().toDateString(); if (user.lastActive !== today) { user.streak = (user.lastActive === new Date(Date.now()-86400000).toDateString()) ? user.streak+1 : 1; user.lastActive = today; saveAll(); } document.getElementById('streakCount').innerText = user.streak; }
+    function updateDate() { 
+        const d = new Date();
+        const weekdays = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        document.getElementById('currentDate').innerText = `${weekdays[d.getDay()]}، ${year}/${month}/${day}`;
+    }
+    function setDailyTip() { const tips = ["الاستمرارية تتفوق على الذكاء دائماً.","برمج عقلك قبل أن تبرمج الكود.","الراحة جزء من العمل، لا تشعر بالذنب حيالها.","قاعدة الـ 5 دقائق: ابدأ المهمة لـ 5 دقائق فقط.","البيئة المنظمة تعني عقلاً منظماً.","تعلم متى تقول 'لا' للمشتتات.","النجاح هو مجموع خطوات صغيرة تتكرر كل يوم.","في البرمجة، التفكير 80% والكتابة 20%.","طالب العلم لا يشبع، والمبرمج لا يتوقف عن التعلم.","اجعل يومك يبدأ بانتصار صغير."]; document.getElementById('dailyTip').innerText = tips[Math.floor((new Date() - new Date(new Date().getFullYear(),0,0))/86400000) % tips.length]; }
+    function startLiveClock() { const el = document.getElementById('liveClock'); setInterval(() => { const d = new Date(); el.innerText = settings.timeFormat === '12' ? d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true}) : d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false}); },500); }
+    function renderSummaryStats() { 
+        const total=tasks.length, comp=tasks.filter(t=>t.completed).length;
+        document.getElementById('completionRate').innerText = total?Math.round(comp/total*100)+'%':'0%'; 
+        document.getElementById('remainingTasks').innerText = total-comp; 
+        document.getElementById('progressPercent').innerText = total?Math.round(comp/total*100)+'%':'0%'; 
+        const weekDays = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت']; 
+        const completedByDay=[0,0,0,0,0,0,0]; 
+        tasks.forEach(t=>{ if(t.completed && t.completedDate) { const day = new Date(t.completedDate).getDay(); completedByDay[day]++; } }); 
+        const maxVal=Math.max(...completedByDay,1); 
+        document.getElementById('weeklyChart').innerHTML = weekDays.map((d,i)=>`<div class="flex-1 flex flex-col items-center"><div class="w-full bg-white/10 h-32 relative"><div class="absolute bottom-0 w-full bg-[var(--accent)] transition-all" style="height:${(completedByDay[i]/maxVal)*100}%"></div></div><span class="text-[8px] mt-1">${d}</span><span class="text-[9px] font-mono">${completedByDay[i]}</span></div>`).join(''); 
+    }
+    window.toggleEmergencyMode = function() { emergencyMode=!emergencyMode; document.getElementById('emergencyBanner').classList.toggle('hidden',!emergencyMode); if(emergencyMode && focusMode) disableFocusMode(); renderTimeline(); };
+    window.toggleZenMode = function() { zenMode=!zenMode; document.body.classList.toggle('zen-mode',zenMode); };
+    window.setTimeFormat = function(f) { settings.timeFormat=f; saveAll(); startLiveClock(); renderTimeline(); };
+    function loadSettings() { document.querySelectorAll('input[name="timeFormat"]').forEach(r=>{ if(r.value===settings.timeFormat) r.checked=true; }); }
+    window.changeTheme = function(t) { document.body.className = document.body.className.replace(/theme-\S+/g,''); document.body.classList.add(`theme-${t}`); localStorage.setItem('arise_theme',t); };
+    window.openModal = function(id) { const modal=document.getElementById(id); if(modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); if(id==='focusModal') renderFocusModal(); if(id==='statsModal') renderSummaryStats(); if(id==='settingsModal') { renderTemplateSelectForEdit(); renderTemplateManagers(); } if(id==='examModal') renderExamsList(); if(id==='logsModal') renderLogsModal(); } };
+    window.closeModal = function(id) { const modal=document.getElementById(id); if(modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); } };
+    window.shareAchievement = function() { const el=document.querySelector('.main-content'); if(el) html2canvas(el,{backgroundColor:getComputedStyle(document.body).getPropertyValue('--bg')}).then(canvas=>{ canvas.toBlob(blob=>{ const file=new File([blob],'arise.png',{type:'image/png'}); if(navigator.share) navigator.share({files:[file],title:'Arise OS'}).catch(()=>{ const a=document.createElement('a'); a.download='arise.png'; a.href=canvas.toDataURL(); a.click(); }); else { const a=document.createElement('a'); a.download='arise.png'; a.href=canvas.toDataURL(); a.click(); } }); }).catch(()=>showToast('حدث خطأ')); else showToast('لا يوجد محتوى'); };
+    window.exportData = function() { const data={tasks,templates,user,settings,currentTemplateName,draftHistory,notesHistory,focusCategories}; const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`arise_backup_${new Date().toISOString().slice(0,19)}.json`; a.click(); showToast('تم التصدير'); };
+    window.importData = function(input) { const file=input.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=function(e){ try{ const d=JSON.parse(e.target.result); if(d.tasks) tasks=d.tasks; if(d.templates) templates=d.templates; if(d.user) user=d.user; if(d.settings) settings=d.settings; if(d.currentTemplateName) currentTemplateName=d.currentTemplateName; if(d.draftHistory) draftHistory=d.draftHistory; if(d.notesHistory) notesHistory=d.notesHistory; if(d.focusCategories) focusCategories=d.focusCategories; saveAll(); renderAll(); loadSettings(); changeTheme(localStorage.getItem('arise_theme')||'matte-gold'); showToast('تم الاستيراد'); } catch(err){ showToast('ملف غير صالح'); } }; reader.readAsText(file); };
+    window.resetAllData = function() { if(confirm('⚠️ حذف كل البيانات؟')) { localStorage.clear(); location.reload(); } };
+    window.installPWA = function() { showToast('من القائمة > تثبيت التطبيق'); closeWelcome(); };
+
+    function initPomodoro() { 
+        const timerDisplay=document.getElementById('pomodoroDisplay'), toggleBtn=document.getElementById('timerToggleBtn'), resetBtn=document.getElementById('timerResetBtn'); 
+        function update(){ timerDisplay.innerText=`${String(Math.floor(timeLeft/60)).padStart(2,'0')}:${String(timeLeft%60).padStart(2,'0')}`; } 
+        toggleBtn.onclick=()=>{ if(timerRunning){ clearInterval(timerInterval); timerRunning=false; toggleBtn.innerText='بدء'; }else{ timerInterval=setInterval(()=>{ if(timeLeft<=0){ clearInterval(timerInterval); timerRunning=false; toggleBtn.innerText='بدء'; showToast('⏰ انتهت الجلسة!'); timeLeft=25*60; update(); return; } timeLeft--; update(); },1000); timerRunning=true; toggleBtn.innerText='إيقاف'; } }; 
+        resetBtn.onclick=()=>{ clearInterval(timerInterval); timerRunning=false; timeLeft=25*60; update(); toggleBtn.innerText='بدء'; }; update(); 
+    }
+
+    function renderAll() {
+        renderSelectors(); renderCategoryCards(); renderTimeline(); renderSummaryStats(); renderTemplateButtons();
+        updateUserDisplay(); updateExamCountdown(); updateStreak(); updateDate(); setDailyTip();
+        if(focusMode) document.getElementById('focusBanner').classList.remove('hidden');
+        else document.getElementById('focusBanner').classList.add('hidden');
+        lucide.createIcons(); saveAll();
+    }
+
+    window.onload = () => {
+        if(localStorage.getItem('arise_welcomed')) document.getElementById('welcomeScreen').style.display='none';
+        focusCategories = JSON.parse(localStorage.getItem('arise_focus_categories')) || [];
+        focusMode = focusCategories.length > 0;
+        updateStreak(); updateDate(); setDailyTip(); renderAll(); startLiveClock(); initPomodoro(); loadDrafts(); loadSettings();
         const savedTheme = localStorage.getItem('arise_theme')||'matte-gold'; changeTheme(savedTheme);
-    })();
+        document.getElementById('searchBox')?.addEventListener('input',(e)=>{ if(['ayanokouji','sung jin-woo'].includes(e.target.value.trim().toLowerCase())){ document.body.classList.add('theme-shadow'); setTimeout(()=>document.body.classList.remove('theme-shadow'),30000); showToast('وضع الظل مُفعّل'); } });
+    };
+})();
 </script>
 </body>
 </html>
