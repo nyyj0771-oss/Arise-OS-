@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Arise OS | جدولك الذكي المتنقل </title>
-   
-
-<meta name="description" content="نظام تشغيل الحياة اليومية للطلاب والمبرمجين. نظم مهامك بأسلوب النخبة مع Arise OS.">
+    <title>Arise OS | جدولك الذكي المتنقل</title>
+    <meta name="description" content="نظام تشغيل الحياة اليومية للطلاب والمبرمجين. نظم مهامك بأسلوب النخبة مع Arise OS.">
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050505'/%3E%3Ctext x='50' y='72' font-family='Arial' font-size='60' font-weight='bold' fill='%23D4AF37' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
@@ -29,8 +27,13 @@
         .quiet-luxury { border: 1px solid var(--border); background: var(--surface); transition: all 0.3s ease; }
         .quiet-luxury:hover { border-color: var(--accent); }
         .gold-gradient { background: linear-gradient(135deg, var(--accent) 0%, #F4D03F 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .btn-primary { background: var(--accent); color: var(--bg); font-weight: 700; clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%); transition: 0.3s; cursor: pointer; }
+        /* تحسين clip-path مع fallback */
+        .btn-primary { background: var(--accent); color: var(--bg); font-weight: 700; border-radius: 4px; transition: 0.3s; cursor: pointer; padding: 0.5rem 1rem; }
         .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        /* دعم clip-path للمتصفحات الحديثة مع الاحتفاظ بشكل آمن */
+        @supports (clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%)) {
+            .btn-primary { clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%); border-radius: 0; }
+        }
         input, select, textarea { background: var(--surface) !important; border: 1px solid var(--border) !important; border-radius: 4px !important; color: var(--text-main) !important; outline: none !important; }
         input:focus, select:focus, textarea:focus { border-color: var(--accent) !important; }
         ::-webkit-scrollbar { width: 3px; height: 3px; }
@@ -170,331 +173,1074 @@
 
 <div id="statsModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm"><div class="quiet-luxury w-full max-w-2xl p-6 rounded-sm"><div class="flex justify-between items-center mb-6"><h3 class="text-lg font-bold tracking-widest uppercase">تحليلات الأداء</h3><button onclick="closeModal('statsModal')"><i data-lucide="x" class="w-6 h-6"></i></button></div><div class="grid grid-cols-2 gap-4 text-sm mb-6"><div class="p-4 bg-white/5 border border-white/5"><p class="opacity-50 mb-1">معدل الإنجاز</p><p class="text-3xl font-bold" id="completionRate">0%</p></div><div class="p-4 bg-white/5 border border-white/5"><p class="opacity-50 mb-1">المهام المتبقية</p><p class="text-3xl font-bold" id="remainingTasks">0</p></div></div><div id="weeklyChart" class="h-40 flex items-end gap-1 mt-4"></div></div></div>
 
-<div id="moodModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm"><div class="quiet-luxury w-full max-w-sm p-6 rounded-sm"><div class="flex justify-between items-center mb-4"><h3 class="text-lg font-bold">كيف تشعر اليوم؟</h3><button onclick="closeModal('moodModal')"><i data-lucide="x" class="w-5 h-5"></i></button></div><div class="grid grid-cols-5 gap-2 mb-4"><button onclick="setMood(1)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">😞</button><button onclick="setMood(2)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">😐</button><button onclick="setMood(3)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">🙂</button><button onclick="setMood(4)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">😊</button><button onclick="setMood(5)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">🤩</button></div><textarea id="gratitudeNote" class="w-full p-3 text-sm h-20 mb-4" placeholder="شيء واحد ممتن له اليوم..."></textarea><button onclick="saveMoodAndGratitude()" class="btn-primary w-full py-3 uppercase text-xs">حفظ اليوم</button></div></div>
+<div id="moodModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm"><div class="quiet-luxury w-full max-w-sm p-6 rounded-sm"><div class="flex justify-between items-center mb-4"><h3 class="text-lg font-bold">كيف تشعر اليوم؟</h3><button onclick="closeModal('moodModal')"><i data-lucide="x" class="w-5 h-5"></i></button></div><div class="grid grid-cols-5 gap-2 mb-4"><button onclick="setMood(1, event)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">😞</button><button onclick="setMood(2, event)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">😐</button><button onclick="setMood(3, event)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">🙂</button><button onclick="setMood(4, event)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">😊</button><button onclick="setMood(5, event)" class="mood-btn text-2xl p-2 border border-white/10 rounded hover:border-[var(--accent)]">🤩</button></div><textarea id="gratitudeNote" class="w-full p-3 text-sm h-20 mb-4" placeholder="شيء واحد ممتن له اليوم..."></textarea><button onclick="saveMoodAndGratitude()" class="btn-primary w-full py-3 uppercase text-xs">حفظ اليوم</button></div></div>
 
 <div id="examModal" class="fixed inset-0 bg-black/95 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm"><div class="quiet-luxury w-full max-w-md p-6 rounded-sm"><div class="flex justify-between items-center mb-6"><h3 class="text-lg font-bold tracking-widest uppercase">إدارة الامتحانات</h3><button onclick="closeModal('examModal')"><i data-lucide="x" class="w-6 h-6"></i></button></div><div class="mb-6"><div class="grid grid-cols-2 gap-2 mb-2"><input type="text" id="newExamName" placeholder="اسم الامتحان" class="p-2 text-sm"><input type="date" id="newExamDate" class="p-2 text-sm"></div><button onclick="addExam()" class="w-full bg-[var(--accent)] text-black py-2 text-xs uppercase font-bold">إضافة امتحان</button></div><div class="space-y-2 max-h-64 overflow-y-auto"><p class="text-xs opacity-50 mb-2">الامتحانات المسجلة</p><div id="examsListContainer"></div></div><button onclick="closeModal('examModal')" class="w-full mt-4 border border-white/10 py-2 uppercase text-xs">إغلاق</button></div></div>
 
 <script>
-(function(){
-    "use strict";
-    // ---------- DATA ----------
-    let tasks = JSON.parse(localStorage.getItem('arise_tasks')) || [];
-    let templates = JSON.parse(localStorage.getItem('arise_templates')) || [ 
-        { name: 'أزهري', categories: ['قرآن وفقه', 'مواد شرعية', 'مواد عربية', 'برمجة', 'تطوير ذات'], subjects: ['فقه', 'تفسير', 'حديث', 'نحو', 'بلاغة'] },
-        { name: 'برمجة', categories: ['Algorithms', 'Frontend', 'Backend', 'System Design', 'English'], subjects: ['JavaScript', 'Python', 'React', 'Node.js', 'CS50'] },
-        { name: 'عام', categories: ['دراسة', 'عمل', 'صحة', 'هوايات'], subjects: ['قراءة', 'رياضة', 'تأمل', 'تخطيط'] } 
-    ];
-    let currentTemplateName = localStorage.getItem('arise_currentTemplate') || templates[0].name;
-    let user = JSON.parse(localStorage.getItem('arise_user')) || { xp: 0, level: 1, streak: 0, lastActive: null, badges: [], exams: [], moodLog: [] };
-    let settings = JSON.parse(localStorage.getItem('arise_settings')) || { timeFormat: '24' };
-    let emergencyMode = false, zenMode = false;
-    let focusMode = false, focusCategories = JSON.parse(localStorage.getItem('arise_focus_categories')) || [];
-    let timerInterval = null, timerRunning = false, timeLeft = 25 * 60;
-    let draftHistory = JSON.parse(localStorage.getItem('arise_draft_history')) || [];
-    let notesHistory = JSON.parse(localStorage.getItem('arise_notes_history')) || [];
+    (function(){
+        "use strict";
 
-    function showToast(msg) { Toastify({ text: msg, duration: 3000, gravity: "bottom", position: "center", style: { background: 'var(--surface)', color: 'var(--text-main)', border: '1px solid var(--accent)' } }).showToast(); }
-    
-    if (localStorage.getItem('arise_welcomed')) document.getElementById('welcomeScreen').style.display = 'none';
-    window.closeWelcome = () => { document.getElementById('welcomeScreen').style.display = 'none'; localStorage.setItem('arise_welcomed','1'); };
+        // ====================== البيانات العامة ======================
+        let tasks = [];
+        let templates = [];
+        let currentTemplateName = '';
+        let user = {};
+        let settings = {};
+        let emergencyMode = false, zenMode = false;
+        let focusMode = false, focusCategories = [];
+        let timerInterval = null, timerRunning = false, timeLeft = 25 * 60;
+        let draftHistory = [];
+        let notesHistory = [];
+        
+        // متغير لحفظ التغييرات لاستخدام saveAll بشكل محدود
+        let saveTimeout = null;
+        function debouncedSave() {
+            if (saveTimeout) clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                saveAll();
+                saveTimeout = null;
+            }, 300);
+        }
 
-    function saveAll() { 
-        localStorage.setItem('arise_tasks', JSON.stringify(tasks)); 
-        localStorage.setItem('arise_templates', JSON.stringify(templates)); 
-        localStorage.setItem('arise_user', JSON.stringify(user)); 
-        localStorage.setItem('arise_settings', JSON.stringify(settings)); 
-        localStorage.setItem('arise_currentTemplate', currentTemplateName);
-        localStorage.setItem('arise_draft_history', JSON.stringify(draftHistory));
-        localStorage.setItem('arise_notes_history', JSON.stringify(notesHistory));
-        localStorage.setItem('arise_focus_categories', JSON.stringify(focusCategories));
-    }
+        // دالة التحقق من صحة البيانات عند التحميل
+        function validateData() {
+            if (!Array.isArray(tasks)) tasks = [];
+            if (!Array.isArray(templates) || templates.length === 0) {
+                templates = [ 
+                    { name: 'أزهري', categories: ['قرآن وفقه', 'مواد شرعية', 'مواد عربية', 'برمجة', 'تطوير ذات'], subjects: ['فقه', 'تفسير', 'حديث', 'نحو', 'بلاغة'] },
+                    { name: 'برمجة', categories: ['Algorithms', 'Frontend', 'Backend', 'System Design', 'English'], subjects: ['JavaScript', 'Python', 'React', 'Node.js', 'CS50'] },
+                    { name: 'عام', categories: ['دراسة', 'عمل', 'صحة', 'هوايات'], subjects: ['قراءة', 'رياضة', 'تأمل', 'تخطيط'] } 
+                ];
+            }
+            if (typeof currentTemplateName !== 'string' || !templates.find(t => t.name === currentTemplateName)) 
+                currentTemplateName = templates[0].name;
+            if (!user || typeof user !== 'object') user = {};
+            if (!Array.isArray(user.exams)) user.exams = [];
+            if (!Array.isArray(user.moodLog)) user.moodLog = [];
+            if (!Array.isArray(user.badges)) user.badges = [];
+            if (typeof user.xp !== 'number') user.xp = 0;
+            if (typeof user.level !== 'number' || user.level < 1) user.level = 1;
+            if (typeof user.streak !== 'number') user.streak = 0;
+            if (typeof user.lastActive !== 'string') user.lastActive = null;
+            if (!settings || typeof settings !== 'object') settings = {};
+            if (settings.timeFormat !== '12' && settings.timeFormat !== '24') settings.timeFormat = '24';
+            if (!Array.isArray(focusCategories)) focusCategories = [];
+            if (!Array.isArray(draftHistory)) draftHistory = [];
+            if (!Array.isArray(notesHistory)) notesHistory = [];
+            
+            // إصلاح المهام القديمة: إضافة قيم افتراضية
+            tasks.forEach(t => {
+                if (!t.priority) t.priority = 'normal';
+                if (!t.start) t.start = '09:00';
+                if (t.completed === undefined) t.completed = false;
+                if (!t.cat && getCurrentTemplate().categories.length) t.cat = getCurrentTemplate().categories[0];
+                if (!t.subject && getCurrentTemplate().subjects.length) t.subject = getCurrentTemplate().subjects[0];
+            });
+        }
 
-    function getCurrentTemplate() { return templates.find(t => t.name === currentTemplateName) || templates[0]; }
-    function getCurrentCategories() { return getCurrentTemplate().categories; }
-    function getCurrentSubjects() { return getCurrentTemplate().subjects; }
+        // تحميل البيانات من localStorage مع التحقق
+        function loadFromLocalStorage() {
+            try {
+                const storedTasks = localStorage.getItem('arise_tasks');
+                if (storedTasks) tasks = JSON.parse(storedTasks);
+                const storedTemplates = localStorage.getItem('arise_templates');
+                if (storedTemplates) templates = JSON.parse(storedTemplates);
+                const storedCurrentTemplate = localStorage.getItem('arise_currentTemplate');
+                if (storedCurrentTemplate) currentTemplateName = storedCurrentTemplate;
+                const storedUser = localStorage.getItem('arise_user');
+                if (storedUser) user = JSON.parse(storedUser);
+                const storedSettings = localStorage.getItem('arise_settings');
+                if (storedSettings) settings = JSON.parse(storedSettings);
+                const storedFocus = localStorage.getItem('arise_focus_categories');
+                if (storedFocus) focusCategories = JSON.parse(storedFocus);
+                const storedDraftHistory = localStorage.getItem('arise_draft_history');
+                if (storedDraftHistory) draftHistory = JSON.parse(storedDraftHistory);
+                const storedNotesHistory = localStorage.getItem('arise_notes_history');
+                if (storedNotesHistory) notesHistory = JSON.parse(storedNotesHistory);
+                
+                // استعادة حالات الوضع
+                const storedEmergency = localStorage.getItem('arise_emergencyMode');
+                if (storedEmergency !== null) emergencyMode = storedEmergency === 'true';
+                const storedZen = localStorage.getItem('arise_zenMode');
+                if (storedZen !== null) zenMode = storedZen === 'true';
+                if (zenMode) document.body.classList.add('zen-mode');
+                
+                focusMode = focusCategories.length > 0;
+            } catch(e) { console.warn(e); }
+            validateData();
+        }
 
-    function renderCategoryCards() { 
-        const cats = getCurrentCategories();
-        const cnt = {};
-        tasks.forEach(t => { if(t.cat) cnt[t.cat] = (cnt[t.cat] || 0) + 1; });
-        document.getElementById('catCardsContainer').innerHTML = cats.map(c => `<div class="quiet-luxury p-3 flex justify-between"><span class="text-xs font-bold">${c}</span><span class="text-sm font-mono text-[var(--accent)]">${cnt[c] || 0}</span></div>`).join('');
-        document.getElementById('currentTemplateNameDisplay').innerText = currentTemplateName;
-    }
+        function saveAll() { 
+            localStorage.setItem('arise_tasks', JSON.stringify(tasks)); 
+            localStorage.setItem('arise_templates', JSON.stringify(templates)); 
+            localStorage.setItem('arise_user', JSON.stringify(user)); 
+            localStorage.setItem('arise_settings', JSON.stringify(settings)); 
+            localStorage.setItem('arise_currentTemplate', currentTemplateName);
+            localStorage.setItem('arise_draft_history', JSON.stringify(draftHistory));
+            localStorage.setItem('arise_notes_history', JSON.stringify(notesHistory));
+            localStorage.setItem('arise_focus_categories', JSON.stringify(focusCategories));
+            localStorage.setItem('arise_emergencyMode', emergencyMode);
+            localStorage.setItem('arise_zenMode', zenMode);
+        }
 
-    function renderSelectors() {
-        const cats = getCurrentCategories();
-        const subs = getCurrentSubjects();
-        document.getElementById('taskCat').innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
-        document.getElementById('taskSubject').innerHTML = subs.map(s => `<option value="${s}">${s}</option>`).join('');
-    }
+        function getCurrentTemplate() { 
+            return templates.find(t => t.name === currentTemplateName) || templates[0]; 
+        }
+        
+        function getCurrentCategories() { 
+            return getCurrentTemplate().categories; 
+        }
+        
+        function getCurrentSubjects() { 
+            return getCurrentTemplate().subjects; 
+        }
 
-    function renderTemplateSelectForEdit() {
-        const select = document.getElementById('templateSelectForEdit');
-        select.innerHTML = templates.map((t, i) => `<option value="${t.name}" ${t.name === currentTemplateName ? 'selected' : ''}>${t.name}</option>`).join('');
-        select.onchange = () => {
-            currentTemplateName = select.value;
-            saveAll();
-            renderTemplateManagers();
-            renderSelectors();
-            renderCategoryCards();
-            renderTemplateButtons();
-            renderTimeline();
-            showToast(`القالب الحالي: ${currentTemplateName}`);
+        // تحسين دالة calculateEndTime
+        function calculateEndTime(start, dur) {
+            if (!start || typeof start !== 'string' || !start.includes(':')) return '--:--';
+            const parts = start.split(':');
+            if (parts.length !== 2) return '--:--';
+            const h = parseInt(parts[0], 10);
+            const m = parseInt(parts[1], 10);
+            if (isNaN(h) || isNaN(m)) return '--:--';
+            const total = h * 60 + m + (dur || 0);
+            return `${String(Math.floor(total / 60) % 24).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
+        }
+
+        function formatTime(timeStr) { 
+            if (!timeStr || typeof timeStr !== 'string' || !timeStr.includes(':')) return '--:--';
+            const [h, m] = timeStr.split(':').map(Number);
+            if (isNaN(h) || isNaN(m)) return '--:--';
+            const d = new Date(); 
+            d.setHours(h, m, 0); 
+            return settings.timeFormat === '12' 
+                ? d.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit', hour12:true}) 
+                : d.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit', hour12:false}); 
+        }
+
+        function addXP(amt) { 
+            user.xp += amt; 
+            const needed = user.level * 100; 
+            if (user.xp >= needed) { 
+                user.level++; 
+                user.xp -= needed; 
+                if (user.level % 5 === 0 && !user.badges.includes(`level-${user.level}`)) 
+                    user.badges.push(`level-${user.level}`); 
+                showToast(`🎉 ارتقيت للمستوى ${user.level}!`); 
+            } 
+            debouncedSave(); 
+            updateUserDisplay(); 
+        }
+
+        function updateUserDisplay() { 
+            document.getElementById('userLevelDisplay').innerText = `Lv.${user.level}`; 
+            document.getElementById('xpDisplay').innerText = `${user.xp} XP`; 
+            document.getElementById('currentLevel').innerText = user.level; 
+            const needed = user.level * 100; 
+            document.getElementById('currentXP').innerText = user.xp; 
+            document.getElementById('nextLevelXP').innerText = needed; 
+            document.getElementById('xpBar').style.width = `${(user.xp / needed) * 100}%`; 
+            const badgesContainer = document.getElementById('badgesContainer');
+            if (user.badges.length) {
+                badgesContainer.innerHTML = user.badges.map(b => `<span class="text-xs bg-[var(--accent)]/10 px-2 py-1 rounded border border-[var(--accent)]">🏅 ${escapeHtml(b)}</span>`).join('');
+            } else {
+                badgesContainer.innerHTML = '<span class="text-xs opacity-30">لا شارات</span>';
+            }
+        }
+
+        function updateStreak() { 
+            const today = new Date().toDateString(); 
+            if (user.lastActive !== today) { 
+                const yesterday = new Date(Date.now() - 86400000).toDateString();
+                user.streak = (user.lastActive === yesterday) ? user.streak + 1 : 1; 
+                user.lastActive = today; 
+                debouncedSave(); 
+            } 
+            document.getElementById('streakCount').innerText = user.streak; 
+        }
+
+        function updateDate() { 
+            const d = new Date();
+            const weekdays = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            document.getElementById('currentDate').innerText = `${weekdays[d.getDay()]}، ${year}/${month}/${day}`;
+        }
+
+        function setDailyTip() { 
+            const tips = ["الاستمرارية تتفوق على الذكاء دائماً.","برمج عقلك قبل أن تبرمج الكود.","الراحة جزء من العمل، لا تشعر بالذنب حيالها.","قاعدة الـ 5 دقائق: ابدأ المهمة لـ 5 دقائق فقط.","البيئة المنظمة تعني عقلاً منظماً.","تعلم متى تقول 'لا' للمشتتات.","النجاح هو مجموع خطوات صغيرة تتكرر كل يوم.","في البرمجة، التفكير 80% والكتابة 20%.","طالب العلم لا يشبع، والمبرمج لا يتوقف عن التعلم.","اجعل يومك يبدأ بانتصار صغير."]; 
+            document.getElementById('dailyTip').innerText = tips[Math.floor((new Date() - new Date(new Date().getFullYear(),0,0))/86400000) % tips.length]; 
+        }
+
+        // تحديث الساعة كل 30 ثانية بدلاً من 500ms
+        let clockInterval = null;
+        function startLiveClock() { 
+            const el = document.getElementById('liveClock'); 
+            function updateClock() {
+                const d = new Date(); 
+                el.innerText = settings.timeFormat === '12' 
+                    ? d.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit', hour12:true}) 
+                    : d.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit', hour12:false});
+            }
+            if (clockInterval) clearInterval(clockInterval);
+            updateClock();
+            clockInterval = setInterval(updateClock, 30000);
+        }
+
+        // ====================== دوال العرض ======================
+        function renderCategoryCards() { 
+            const cats = getCurrentCategories();
+            const cnt = {};
+            tasks.forEach(t => { if(t.cat) cnt[t.cat] = (cnt[t.cat] || 0) + 1; });
+            document.getElementById('catCardsContainer').innerHTML = cats.map(c => `<div class="quiet-luxury p-3 flex justify-between"><span class="text-xs font-bold">${escapeHtml(c)}</span><span class="text-sm font-mono text-[var(--accent)]">${cnt[c] || 0}</span></div>`).join('');
+            document.getElementById('currentTemplateNameDisplay').innerText = currentTemplateName;
+        }
+
+        function renderSelectors() {
+            const cats = getCurrentCategories();
+            const subs = getCurrentSubjects();
+            document.getElementById('taskCat').innerHTML = cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+            document.getElementById('taskSubject').innerHTML = subs.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+        }
+
+        function renderTimeline() {
+            let show = tasks;
+            if (emergencyMode) {
+                show = tasks.filter(t => !t.completed)
+                           .sort((a,b) => ({urgent:1, high:2, normal:3}[a.priority] || 3) - ({urgent:1, high:2, normal:3}[b.priority] || 3))
+                           .slice(0,3);
+            } else if (focusMode && focusCategories.length) {
+                show = tasks.filter(t => focusCategories.includes(t.cat));
+            }
+            const list = document.getElementById('timelineList');
+            const empty = document.getElementById('emptyTimeline');
+            if (!show.length) { 
+                list.innerHTML = ''; 
+                empty.classList.remove('hidden'); 
+                return; 
+            }
+            empty.classList.add('hidden');
+            list.innerHTML = show.sort((a,b) => (a.start || '00:00').localeCompare(b.start || '00:00'))
+                .map(t => {
+                    const startTime = t.start || '00:00';
+                    const endTime = calculateEndTime(startTime, t.dur);
+                    return `<div class="quiet-luxury p-4 flex flex-wrap md:flex-nowrap items-center gap-3 ${t.completed ? 'opacity-60 line-through' : ''} ${t.priority === 'high' ? 'border-r-4 border-orange-400' : t.priority === 'urgent' ? 'border-r-4 border-red-500' : ''}">
+                        <div class="w-20 text-center">
+                            <span class="text-xs opacity-60">${formatTime(startTime)}</span>
+                            <span class="block text-lg font-bold text-[var(--accent)]">${formatTime(endTime)}</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-sm">${escapeHtml(t.name)}</h4>
+                            <div class="flex gap-3 text-[10px] opacity-50">
+                                <span>${escapeHtml(t.cat || '')}</span>
+                                <span>${escapeHtml(t.subject || '')}</span>
+                                <span>${t.dur} دقيقة</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleTaskCompletion(${t.id})" class="p-2"><i data-lucide="${t.completed ? 'check-circle' : 'circle'}" class="w-5 h-5 ${t.completed ? 'text-green-400' : ''}"></i></button>
+                            <button onclick="deleteTask(${t.id})" class="p-2"><i data-lucide="trash-2" class="w-4 h-4 text-red-400/60"></i></button>
+                        </div>
+                    </div>`;
+                }).join('');
+            lucide.createIcons();
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        function renderSummaryStats() { 
+            const total = tasks.length, comp = tasks.filter(t => t.completed).length;
+            document.getElementById('completionRate').innerText = total ? Math.round(comp/total*100) + '%' : '0%'; 
+            document.getElementById('remainingTasks').innerText = total - comp; 
+            document.getElementById('progressPercent').innerText = total ? Math.round(comp/total*100) + '%' : '0%'; 
+            
+            const weekDays = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت']; 
+            const completedByDay = [0,0,0,0,0,0,0]; 
+            tasks.forEach(t => { 
+                if (t.completed && t.completedDate) { 
+                    const day = new Date(t.completedDate).getDay(); 
+                    completedByDay[day]++; 
+                } 
+            }); 
+            const maxVal = Math.max(...completedByDay, 1); 
+            document.getElementById('weeklyChart').innerHTML = weekDays.map((d,i) => 
+                `<div class="flex-1 flex flex-col items-center">
+                    <div class="w-full bg-white/10 h-32 relative">
+                        <div class="absolute bottom-0 w-full bg-[var(--accent)] transition-all" style="height:${(completedByDay[i]/maxVal)*100}%"></div>
+                    </div>
+                    <span class="text-[8px] mt-1">${d}</span>
+                    <span class="text-[9px] font-mono">${completedByDay[i]}</span>
+                </div>`
+            ).join(''); 
+        }
+
+        function renderExamsList() { 
+            const cont = document.getElementById('examsListContainer'); 
+            if (!user.exams.length) { 
+                cont.innerHTML = '<p class="text-xs opacity-30 text-center py-4">لا امتحانات</p>'; 
+                return; 
+            } 
+            cont.innerHTML = user.exams.sort((a,b) => new Date(a.date) - new Date(b.date))
+                .map((e, i) => { 
+                    const d = new Date(e.date);
+                    const days = Math.ceil((d - new Date()) / 86400000);
+                    return `<div class="flex justify-between items-center p-2 bg-white/5">
+                        <div>
+                            <span>${escapeHtml(e.name)}</span>
+                            <span class="text-[10px] opacity-50 mr-2">${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} (${days>0 ? days+' يوم' : days===0 ? 'اليوم!' : 'انتهى'})</span>
+                        </div>
+                        <button onclick="deleteExam(${i})" class="text-red-500/50"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>`; 
+                }).join(''); 
+            lucide.createIcons(); 
+        }
+
+        function updateExamCountdown() { 
+            if (!user.exams.length) { 
+                document.getElementById('nextExamName').innerText = 'لم يحدد'; 
+                document.getElementById('examDaysLeft').innerText = '--'; 
+                return; 
+            } 
+            const next = user.exams.sort((a,b) => new Date(a.date) - new Date(b.date))[0];
+            const days = Math.ceil((new Date(next.date) - new Date()) / 86400000); 
+            document.getElementById('nextExamName').innerText = next.name; 
+            document.getElementById('examDaysLeft').innerText = days>0 ? `${days} يوم` : days===0 ? 'اليوم!' : 'انتهى'; 
+        }
+
+        // ====================== إدارة القوالب ======================
+        function renderTemplateSelectForEdit() {
+            const select = document.getElementById('templateSelectForEdit');
+            select.innerHTML = templates.map((t, i) => `<option value="${escapeHtml(t.name)}" ${t.name === currentTemplateName ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join('');
+            select.onchange = () => {
+                currentTemplateName = select.value;
+                // تحديث أسماء القالب المعروضة في نفس المودال
+                updateTemplateNamesDisplay();
+                // إعادة تحويل المهام غير المتوافقة
+                migrateTasksToCurrentTemplate();
+                debouncedSave();
+                renderTemplateManagers();
+                renderSelectors();
+                renderCategoryCards();
+                renderTemplateButtons();
+                renderTimeline();
+                showToast(`القالب الحالي: ${currentTemplateName}`);
+            };
+            updateTemplateNamesDisplay();
+        }
+        
+        function updateTemplateNamesDisplay() {
+            document.getElementById('selectedTemplateNameForCats').innerText = currentTemplateName;
+            document.getElementById('selectedTemplateNameForSubjects').innerText = currentTemplateName;
+        }
+        
+        // تحويل المهام غير المتوافقة مع القالب الحالي
+        function migrateTasksToCurrentTemplate() {
+            const template = getCurrentTemplate();
+            const validCats = template.categories;
+            const validSubjects = template.subjects;
+            let changed = false;
+            tasks.forEach(t => {
+                if (t.cat && !validCats.includes(t.cat) && validCats.length) {
+                    t.cat = validCats[0];
+                    changed = true;
+                }
+                if (t.subject && !validSubjects.includes(t.subject) && validSubjects.length) {
+                    t.subject = validSubjects[0];
+                    changed = true;
+                }
+            });
+            if (changed) showToast('تم تحويل بعض المهام لتناسب القالب الجديد');
+        }
+
+        function renderTemplateManagers() {
+            const template = getCurrentTemplate();
+            document.getElementById('templateCatsManager').innerHTML = template.categories.map((cat, idx) => `
+                <div class="flex justify-between items-center p-2 bg-white/5 border border-white/5 rounded">
+                    <input value="${escapeHtml(cat)}" data-index="${idx}" data-type="cat" class="template-edit-input flex-1 bg-transparent border-none text-sm p-1" />
+                    <button onclick="deleteCategoryFromTemplate(${idx})" class="text-red-500/50 mr-2"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                </div>
+            `).join('');
+            document.getElementById('templateSubjectsManager').innerHTML = template.subjects.map((sub, idx) => `
+                <div class="flex justify-between items-center p-2 bg-white/5 border border-white/5 rounded">
+                    <input value="${escapeHtml(sub)}" data-index="${idx}" data-type="sub" class="template-edit-input flex-1 bg-transparent border-none text-sm p-1" />
+                    <button onclick="deleteSubjectFromTemplate(${idx})" class="text-red-500/50 mr-2"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                </div>
+            `).join('');
+            document.querySelectorAll('.template-edit-input').forEach(inp => inp.addEventListener('change', handleInlineEdit));
+            lucide.createIcons();
+            updateTemplateNamesDisplay();
+        }
+
+        function handleInlineEdit(e) {
+            const inp = e.target;
+            const idx = parseInt(inp.dataset.index);
+            const type = inp.dataset.type;
+            const newVal = inp.value.trim();
+            const template = getCurrentTemplate();
+            if (type === 'cat') {
+                const oldVal = template.categories[idx];
+                if (newVal && newVal !== oldVal) {
+                    template.categories[idx] = newVal;
+                    tasks.forEach(t => { if (t.cat === oldVal) t.cat = newVal; });
+                    if (focusMode && focusCategories.includes(oldVal)) 
+                        focusCategories = focusCategories.map(f => f === oldVal ? newVal : f);
+                    debouncedSave(); 
+                    renderSelectors(); 
+                    renderCategoryCards(); 
+                    renderTemplateManagers(); 
+                    showToast('تم تعديل القسم');
+                } else inp.value = oldVal;
+            } else if (type === 'sub') {
+                const oldVal = template.subjects[idx];
+                if (newVal && newVal !== oldVal) {
+                    template.subjects[idx] = newVal;
+                    tasks.forEach(t => { if (t.subject === oldVal) t.subject = newVal; });
+                    debouncedSave(); 
+                    renderSelectors(); 
+                    renderTemplateManagers(); 
+                    showToast('تم تعديل المادة');
+                } else inp.value = oldVal;
+            }
+        }
+
+        window.deleteCategoryFromTemplate = function(idx) {
+            const template = getCurrentTemplate();
+            if (template.categories.length <= 1) {
+                showToast('لا يمكن حذف آخر قسم في القالب');
+                return;
+            }
+            const cat = template.categories[idx];
+            const tasksWithCat = tasks.filter(t => t.cat === cat);
+            if (tasksWithCat.length > 0 && !confirm(`⚠️ هناك ${tasksWithCat.length} مهمة مرتبطة بهذا القسم. سيتم نقلها إلى أول قسم متاح. هل تريد المتابعة؟`)) return;
+            template.categories.splice(idx, 1);
+            if (template.categories.length > 0) {
+                const defaultCat = template.categories[0];
+                tasks.forEach(t => { if (t.cat === cat) t.cat = defaultCat; });
+            }
+            if (focusCategories.includes(cat)) focusCategories = focusCategories.filter(f => f !== cat);
+            debouncedSave(); 
+            renderSelectors(); 
+            renderCategoryCards(); 
+            renderTemplateManagers(); 
+            showToast(`تم حذف القسم "${cat}" ونقل مهامه`);
         };
-        document.getElementById('selectedTemplateNameForCats').innerText = currentTemplateName;
-        document.getElementById('selectedTemplateNameForSubjects').innerText = currentTemplateName;
-    }
 
-    function renderTemplateManagers() {
-        const template = getCurrentTemplate();
-        document.getElementById('templateCatsManager').innerHTML = template.categories.map((cat, idx) => `
-            <div class="flex justify-between items-center p-2 bg-white/5 border border-white/5 rounded">
-                <input value="${cat}" data-index="${idx}" data-type="cat" class="template-edit-input flex-1 bg-transparent border-none text-sm p-1" />
-                <button onclick="deleteCategoryFromTemplate(${idx})" class="text-red-500/50 mr-2"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-            </div>
-        `).join('');
-        document.getElementById('templateSubjectsManager').innerHTML = template.subjects.map((sub, idx) => `
-            <div class="flex justify-between items-center p-2 bg-white/5 border border-white/5 rounded">
-                <input value="${sub}" data-index="${idx}" data-type="sub" class="template-edit-input flex-1 bg-transparent border-none text-sm p-1" />
-                <button onclick="deleteSubjectFromTemplate(${idx})" class="text-red-500/50 mr-2"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-            </div>
-        `).join('');
-        document.querySelectorAll('.template-edit-input').forEach(inp => inp.addEventListener('change', handleInlineEdit));
-        lucide.createIcons();
-    }
+        window.deleteSubjectFromTemplate = function(idx) {
+            const template = getCurrentTemplate();
+            if (template.subjects.length <= 1) {
+                showToast('لا يمكن حذف آخر مادة في القالب');
+                return;
+            }
+            const sub = template.subjects[idx];
+            const tasksWithSub = tasks.filter(t => t.subject === sub);
+            if (tasksWithSub.length > 0 && !confirm(`⚠️ هناك ${tasksWithSub.length} مهمة مرتبطة بهذه المادة. سيتم نقلها إلى أول مادة متاحة. هل تريد المتابعة؟`)) return;
+            template.subjects.splice(idx, 1);
+            if (template.subjects.length > 0) {
+                const defaultSub = template.subjects[0];
+                tasks.forEach(t => { if (t.subject === sub) t.subject = defaultSub; });
+            }
+            debouncedSave(); 
+            renderSelectors(); 
+            renderTemplateManagers(); 
+            showToast(`تم حذف المادة "${sub}" ونقل مهامها`);
+        };
 
-    function handleInlineEdit(e) {
-        const inp = e.target;
-        const idx = parseInt(inp.dataset.index);
-        const type = inp.dataset.type;
-        const newVal = inp.value.trim();
-        const template = getCurrentTemplate();
-        if(type === 'cat') {
-            const oldVal = template.categories[idx];
-            if(newVal && newVal !== oldVal) {
-                template.categories[idx] = newVal;
-                tasks.forEach(t => { if(t.cat === oldVal) t.cat = newVal; });
-                if(focusMode && focusCategories.includes(oldVal)) focusCategories = focusCategories.map(f => f === oldVal ? newVal : f);
-                saveAll(); renderSelectors(); renderCategoryCards(); renderTemplateManagers(); showToast('تم تعديل القسم');
-            } else inp.value = oldVal;
-        } else if(type === 'sub') {
-            const oldVal = template.subjects[idx];
-            if(newVal && newVal !== oldVal) {
-                template.subjects[idx] = newVal;
-                tasks.forEach(t => { if(t.subject === oldVal) t.subject = newVal; });
-                saveAll(); renderSelectors(); renderTemplateManagers(); showToast('تم تعديل المادة');
-            } else inp.value = oldVal;
+        window.addCategoryToCurrentTemplate = function() {
+            const newCat = document.getElementById('newCatForTemplate').value.trim();
+            const template = getCurrentTemplate();
+            if (newCat && !template.categories.includes(newCat)) {
+                template.categories.push(newCat); 
+                debouncedSave(); 
+                renderSelectors(); 
+                renderCategoryCards(); 
+                renderTemplateManagers();
+                document.getElementById('newCatForTemplate').value = ''; 
+                showToast(`تم إضافة قسم "${newCat}"`);
+            } else showToast('القسم موجود أو فارغ');
+        };
+
+        window.addSubjectToCurrentTemplate = function() {
+            const newSub = document.getElementById('newSubjectForTemplate').value.trim();
+            const template = getCurrentTemplate();
+            if (newSub && !template.subjects.includes(newSub)) {
+                template.subjects.push(newSub); 
+                debouncedSave(); 
+                renderSelectors(); 
+                renderTemplateManagers();
+                document.getElementById('newSubjectForTemplate').value = ''; 
+                showToast(`تم إضافة مادة "${newSub}"`);
+            } else showToast('المادة موجودة أو فارغة');
+        };
+
+        window.addNewTemplateFromSettings = function() {
+            const newName = document.getElementById('newTemplateNameSetting').value.trim();
+            if (newName && !templates.find(t => t.name === newName)) {
+                const currentTemp = getCurrentTemplate();
+                templates.push({ name: newName, categories: [...currentTemp.categories], subjects: [...currentTemp.subjects] });
+                document.getElementById('newTemplateNameSetting').value = ''; 
+                debouncedSave();
+                renderTemplateSelectForEdit(); 
+                renderTemplateButtons(); 
+                renderTemplateManagers(); 
+                showToast(`تم إضافة قالب "${newName}"`);
+            } else showToast('الاسم موجود أو غير صالح');
+        };
+
+        window.deleteCurrentTemplate = function() {
+            if (templates.length <= 1) return showToast('لا يمكن حذف القالب الوحيد');
+            if (confirm(`حذف قالب "${currentTemplateName}"؟ المهام المرتبطة به ستبقى.`)) {
+                templates = templates.filter(t => t.name !== currentTemplateName);
+                currentTemplateName = templates[0].name; 
+                migrateTasksToCurrentTemplate();
+                debouncedSave();
+                renderTemplateSelectForEdit(); 
+                renderTemplateButtons(); 
+                renderSelectors(); 
+                renderCategoryCards(); 
+                renderTemplateManagers(); 
+                renderTimeline(); 
+                showToast('تم حذف القالب');
+            }
+        };
+
+        function renderTemplateButtons() {
+            document.getElementById('templateButtonsContainer').innerHTML = templates.map(t => 
+                `<button onclick="switchTemplate('${escapeHtml(t.name)}')" class="text-[11px] border border-white/10 py-3 rounded-sm hover:border-[var(--accent)] ${currentTemplateName===t.name ? 'border-[var(--accent)] bg-white/5' : ''}">${escapeHtml(t.name)}</button>`
+            ).join('');
         }
-    }
+        
+        window.switchTemplate = function(name) {
+            if (currentTemplateName === name) return;
+            currentTemplateName = name; 
+            migrateTasksToCurrentTemplate();
+            debouncedSave();
+            renderTemplateButtons(); 
+            renderSelectors(); 
+            renderCategoryCards(); 
+            renderTimeline(); 
+            if (document.getElementById('settingsModal').classList.contains('flex')) {
+                renderTemplateSelectForEdit();
+                renderTemplateManagers();
+            }
+            showToast(`القالب الحالي: ${name}`);
+        };
 
-    window.deleteCategoryFromTemplate = function(idx) {
-        const template = getCurrentTemplate();
-        const cat = template.categories[idx];
-        if(tasks.filter(t => t.cat === cat).length > 0 && !confirm(`⚠️ هناك مهام مرتبطة بهذا القسم. حذفه سيؤثر عليها. هل تريد المتابعة؟`)) return;
-        template.categories.splice(idx, 1); saveAll(); renderSelectors(); renderCategoryCards(); renderTemplateManagers(); showToast(`تم حذف القسم "${cat}"`);
-    };
+        // ====================== المهام والإجراءات ======================
+        window.addTask = function() { 
+            const name = document.getElementById('taskName').value.trim();
+            const cat = document.getElementById('taskCat').value;
+            const dur = parseInt(document.getElementById('taskDur').value);
+            const start = document.getElementById('taskStart').value;
+            const pri = document.getElementById('taskPriority').value;
+            const subject = document.getElementById('taskSubject').value;
+            if (!name || !dur || isNaN(dur)) return showToast('الاسم والمدة مطلوبان');
+            tasks.push({ 
+                id: Date.now() + Math.random(), 
+                name, cat, subject, 
+                dur, start, 
+                priority: pri, 
+                completed: false 
+            }); 
+            document.getElementById('taskName').value = ''; 
+            renderAll(); 
+            showToast('تمت إضافة المهمة'); 
+        };
 
-    window.deleteSubjectFromTemplate = function(idx) {
-        const template = getCurrentTemplate();
-        const sub = template.subjects[idx];
-        if(tasks.filter(t => t.subject === sub).length > 0 && !confirm(`⚠️ هناك مهام مرتبطة بهذه المادة. حذفها سيؤثر عليها. هل تريد المتابعة؟`)) return;
-        template.subjects.splice(idx, 1); saveAll(); renderSelectors(); renderTemplateManagers(); showToast(`تم حذف المادة "${sub}"`);
-    };
+        window.toggleTaskCompletion = function(id) { 
+            const t = tasks.find(t => t.id === id); 
+            if (t) { 
+                t.completed = !t.completed; 
+                if (t.completed) { 
+                    addXP(10 + (t.priority === 'high' ? 5 : 10)); 
+                    t.completedDate = new Date().toISOString(); 
+                } else { 
+                    t.completedDate = null; 
+                } 
+                renderAll(); 
+            } 
+        };
 
-    window.addCategoryToCurrentTemplate = function() {
-        const newCat = document.getElementById('newCatForTemplate').value.trim();
-        const template = getCurrentTemplate();
-        if(newCat && !template.categories.includes(newCat)) {
-            template.categories.push(newCat); saveAll(); renderSelectors(); renderCategoryCards(); renderTemplateManagers();
-            document.getElementById('newCatForTemplate').value = ''; showToast(`تم إضافة قسم "${newCat}"`);
-        } else showToast('القسم موجود أو فارغ');
-    };
+        window.deleteTask = function(id) { 
+            tasks = tasks.filter(t => t.id !== id); 
+            renderAll(); 
+        };
 
-    window.addSubjectToCurrentTemplate = function() {
-        const newSub = document.getElementById('newSubjectForTemplate').value.trim();
-        const template = getCurrentTemplate();
-        if(newSub && !template.subjects.includes(newSub)) {
-            template.subjects.push(newSub); saveAll(); renderSelectors(); renderTemplateManagers();
-            document.getElementById('newSubjectForTemplate').value = ''; showToast(`تم إضافة مادة "${newSub}"`);
-        } else showToast('المادة موجودة أو فارغة');
-    };
+        // ====================== وضع الطوارئ والتركيز والهدوء ======================
+        window.toggleEmergencyMode = function() { 
+            emergencyMode = !emergencyMode; 
+            document.getElementById('emergencyBanner').classList.toggle('hidden', !emergencyMode); 
+            if (emergencyMode && focusMode) disableFocusMode(); 
+            debouncedSave();
+            renderTimeline(); 
+        };
 
-    window.addNewTemplateFromSettings = function() {
-        const newName = document.getElementById('newTemplateNameSetting').value.trim();
-        if(newName && !templates.find(t => t.name === newName)) {
-            const currentTemp = getCurrentTemplate();
-            templates.push({ name: newName, categories: [...currentTemp.categories], subjects: [...currentTemp.subjects] });
-            document.getElementById('newTemplateNameSetting').value = ''; saveAll();
-            renderTemplateSelectForEdit(); renderTemplateButtons(); renderTemplateManagers(); showToast(`تم إضافة قالب "${newName}"`);
-        } else showToast('الاسم موجود أو غير صالح');
-    };
+        window.toggleZenMode = function() { 
+            zenMode = !zenMode; 
+            document.body.classList.toggle('zen-mode', zenMode); 
+            debouncedSave();
+        };
 
-    window.deleteCurrentTemplate = function() {
-        if(templates.length <= 1) return showToast('لا يمكن حذف القالب الوحيد');
-        if(confirm(`حذف قالب "${currentTemplateName}"؟ المهام المرتبطة به ستبقى.`)) {
-            templates = templates.filter(t => t.name !== currentTemplateName);
-            currentTemplateName = templates[0].name; saveAll();
-            renderTemplateSelectForEdit(); renderTemplateButtons(); renderSelectors(); renderCategoryCards(); renderTemplateManagers(); renderTimeline(); showToast('تم حذف القالب');
+        function renderFocusModal() {
+            document.getElementById('focusCategoriesList').innerHTML = getCurrentCategories().map(c => 
+                `<label class="flex items-center gap-2 p-2 bg-white/5 rounded"><input type="checkbox" value="${escapeHtml(c)}" ${focusCategories.includes(c) ? 'checked' : ''} class="focus-cb"> <span>${escapeHtml(c)}</span></label>`
+            ).join('');
         }
-    };
 
-    function renderTemplateButtons() {
-        document.getElementById('templateButtonsContainer').innerHTML = templates.map(t => `<button onclick="switchTemplate('${t.name}')" class="text-[11px] border border-white/10 py-3 rounded-sm hover:border-[var(--accent)] ${currentTemplateName===t.name ? 'border-[var(--accent)] bg-white/5' : ''}">${t.name}</button>`).join('');
-    }
-    window.switchTemplate = function(name) {
-        currentTemplateName = name; saveAll();
-        renderTemplateButtons(); renderSelectors(); renderCategoryCards(); renderTimeline(); renderTemplateSelectForEdit(); renderTemplateManagers(); showToast(`القالب الحالي: ${name}`);
-    };
+        window.applyFocusMode = function() {
+            focusCategories = Array.from(document.querySelectorAll('#focusCategoriesList .focus-cb'))
+                                   .filter(cb => cb.checked)
+                                   .map(cb => cb.value);
+            focusMode = focusCategories.length > 0;
+            document.getElementById('focusBanner').classList.toggle('hidden', !focusMode);
+            showToast(focusMode ? `وضع التركيز مفعل: ${focusCategories.join(', ')}` : 'تم إلغاء وضع التركيز');
+            debouncedSave(); 
+            closeModal('focusModal'); 
+            renderTimeline();
+        };
 
-    function formatTime(t) { if(!t) return '--:--'; const [h,m]=t.split(':').map(Number); const d=new Date(); d.setHours(h,m,0); return settings.timeFormat==='12'? d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true}) : d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false}); }
-    function calculateEndTime(start,dur){ const [h,m]=start.split(':').map(Number); const total=h*60+m+dur; return `${String(Math.floor(total/60)%24).padStart(2,'0')}:${String(total%60).padStart(2,'0')}`; }
-    
-    function renderTimeline() {
-        let show = tasks;
-        if(emergencyMode) show = tasks.filter(t=>!t.completed).sort((a,b)=>({urgent:1,high:2,normal:3}[a.priority]||3)-({urgent:1,high:2,normal:3}[b.priority]||3)).slice(0,3);
-        else if(focusMode && focusCategories.length) show = tasks.filter(t => focusCategories.includes(t.cat));
-        const list = document.getElementById('timelineList'), empty = document.getElementById('emptyTimeline');
-        if(!show.length) { list.innerHTML=''; empty.classList.remove('hidden'); return; } empty.classList.add('hidden');
-        list.innerHTML = show.sort((a,b)=>(a.start||'00:00').localeCompare(b.start||'00:00')).map(t=>`<div class="quiet-luxury p-4 flex flex-wrap md:flex-nowrap items-center gap-3 ${t.completed?'opacity-60 line-through':''} ${t.priority==='high'?'border-r-4 border-orange-400':t.priority==='urgent'?'border-r-4 border-red-500':''}"><div class="w-20 text-center"><span class="text-xs opacity-60">${formatTime(t.start)}</span><span class="block text-lg font-bold text-[var(--accent)]">${formatTime(calculateEndTime(t.start,t.dur))}</span></div><div class="flex-1"><h4 class="font-bold text-sm">${t.name}</h4><div class="flex gap-3 text-[10px] opacity-50"><span>${t.cat}</span><span>${t.subject || ''}</span><span>${t.dur} دقيقة</span></div></div><div class="flex items-center gap-2"><button onclick="toggleTaskCompletion(${t.id})" class="p-2"><i data-lucide="${t.completed?'check-circle':'circle'}" class="w-5 h-5 ${t.completed?'text-green-400':''}"></i></button><button onclick="deleteTask(${t.id})" class="p-2"><i data-lucide="trash-2" class="w-4 h-4 text-red-400/60"></i></button></div></div>`).join('');
-        lucide.createIcons();
-    }
+        window.disableFocusMode = function() { 
+            focusMode = false; 
+            focusCategories = []; 
+            document.getElementById('focusBanner').classList.add('hidden'); 
+            debouncedSave(); 
+            closeModal('focusModal'); 
+            renderTimeline(); 
+            showToast('تم إلغاء وضع التركيز'); 
+        };
 
-    window.addTask = function() { 
-        const name=document.getElementById('taskName').value.trim(), cat=document.getElementById('taskCat').value, dur=parseInt(document.getElementById('taskDur').value), start=document.getElementById('taskStart').value, pri=document.getElementById('taskPriority').value, subject=document.getElementById('taskSubject').value; 
-        if(!name||!dur) return showToast('الاسم والمدة مطلوبان'); 
-        tasks.push({ id:Date.now()+Math.random(), name, cat, subject, dur, start, priority:pri, completed:false }); 
-        document.getElementById('taskName').value=''; renderAll(); showToast('تمت إضافة المهمة'); 
-    };
-    window.toggleTaskCompletion = function(id) { const t=tasks.find(t=>t.id===id); if(t) { t.completed=!t.completed; if(t.completed) { addXP(10+(t.priority==='high'?5:10)); t.completedDate = new Date().toISOString(); } else t.completedDate=null; renderAll(); } };
-    window.deleteTask = function(id) { tasks=tasks.filter(t=>t.id!==id); renderAll(); };
-    
-    function addXP(amt) { user.xp += amt; const needed = user.level*100; if (user.xp >= needed) { user.level++; user.xp -= needed; if (user.level%5===0 && !user.badges.includes(`level-${user.level}`)) user.badges.push(`level-${user.level}`); showToast(`🎉 ارتقيت للمستوى ${user.level}!`); } saveAll(); updateUserDisplay(); }
-    function updateUserDisplay() { document.getElementById('userLevelDisplay').innerText = `Lv.${user.level}`; document.getElementById('xpDisplay').innerText = `${user.xp} XP`; document.getElementById('currentLevel').innerText = user.level; const needed = user.level*100; document.getElementById('currentXP').innerText = user.xp; document.getElementById('nextLevelXP').innerText = needed; document.getElementById('xpBar').style.width = `${(user.xp/needed)*100}%`; document.getElementById('badgesContainer').innerHTML = user.badges.map(b=>`<span class="text-xs bg-[var(--accent)]/10 px-2 py-1 rounded border border-[var(--accent)]">🏅 ${b}</span>`).join('')||'<span class="text-xs opacity-30">لا شارات</span>'; }
+        // ====================== إدارة الامتحانات ======================
+        window.addExam = function() { 
+            const n = document.getElementById('newExamName').value.trim(); 
+            const d = document.getElementById('newExamDate').value; 
+            if (!n || !d) return showToast('أدخل البيانات'); 
+            user.exams.push({name: n, date: d}); 
+            debouncedSave(); 
+            renderExamsList(); 
+            updateExamCountdown(); 
+            document.getElementById('newExamName').value = ''; 
+            document.getElementById('newExamDate').value = ''; 
+            closeModal('examModal'); 
+            showToast('تمت إضافة الامتحان'); 
+        };
 
-    function renderFocusModal() {
-        document.getElementById('focusCategoriesList').innerHTML = getCurrentCategories().map(c => `<label class="flex items-center gap-2 p-2 bg-white/5 rounded"><input type="checkbox" value="${c}" ${focusCategories.includes(c) ? 'checked' : ''} class="focus-cb"> <span>${c}</span></label>`).join('');
-    }
-    window.applyFocusMode = function() {
-        focusCategories = Array.from(document.querySelectorAll('#focusCategoriesList .focus-cb')).filter(cb => cb.checked).map(cb => cb.value);
-        focusMode = focusCategories.length > 0;
-        document.getElementById('focusBanner').classList.toggle('hidden', !focusMode);
-        showToast(focusMode ? `وضع التركيز مفعل: ${focusCategories.join(', ')}` : 'تم إلغاء وضع التركيز');
-        saveAll(); closeModal('focusModal'); renderTimeline();
-    };
-    window.disableFocusMode = function() { focusMode = false; focusCategories = []; document.getElementById('focusBanner').classList.add('hidden'); saveAll(); closeModal('focusModal'); renderTimeline(); showToast('تم إلغاء وضع التركيز'); };
+        window.deleteExam = function(i) { 
+            user.exams.splice(i, 1); 
+            debouncedSave(); 
+            renderExamsList(); 
+            updateExamCountdown(); 
+        };
 
-    function renderExamsList() { 
-        const cont=document.getElementById('examsListContainer'); 
-        if(!user.exams.length) { cont.innerHTML='<p class="text-xs opacity-30 text-center py-4">لا امتحانات</p>'; return; } 
-        cont.innerHTML = user.exams.sort((a,b)=>new Date(a.date)-new Date(b.date)).map((e,i)=>{ 
-            const d=new Date(e.date), days=Math.ceil((d-new Date())/(86400000));
-            return `<div class="flex justify-between items-center p-2 bg-white/5"><div><span>${e.name}</span><span class="text-[10px] opacity-50 mr-2">${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} (${days>0?days+' يوم':days===0?'اليوم!':'انتهى'})</span></div><button onclick="deleteExam(${i})" class="text-red-500/50"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`; 
-        }).join(''); 
-        lucide.createIcons(); 
-    }
-    function updateExamCountdown() { 
-        if(!user.exams.length) { document.getElementById('nextExamName').innerText='لم يحدد'; document.getElementById('examDaysLeft').innerText='--'; return; } 
-        const next=user.exams.sort((a,b)=>new Date(a.date)-new Date(b.date))[0], days=Math.ceil((new Date(next.date)-new Date())/(86400000)); 
-        document.getElementById('nextExamName').innerText=next.name; 
-        document.getElementById('examDaysLeft').innerText=days>0?`${days} يوم`:days===0?'اليوم!':'انتهى'; 
-    }
-    window.addExam = function() { 
-        const n=document.getElementById('newExamName').value.trim(), d=document.getElementById('newExamDate').value; 
-        if(!n||!d) return showToast('أدخل البيانات'); 
-        user.exams.push({name:n,date:d}); saveAll(); renderExamsList(); updateExamCountdown(); 
-        document.getElementById('newExamName').value=''; document.getElementById('newExamDate').value=''; closeModal('examModal'); showToast('تمت إضافة الامتحان'); 
-    };
-    window.deleteExam = function(i) { user.exams.splice(i,1); saveAll(); renderExamsList(); updateExamCountdown(); };
+        // ====================== سجل المزاج والامتنان ======================
+        let currentMood = 3;
+        window.setMood = function(v, event) { 
+            currentMood = v; 
+            document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('border-[var(--accent)]')); 
+            if (event && event.target) event.target.classList.add('border-[var(--accent)]'); 
+        };
 
-    let currentMood = 3;
-    window.setMood = function(v) { currentMood=v; document.querySelectorAll('.mood-btn').forEach(btn=>btn.classList.remove('border-[var(--accent)]')); if(event && event.target) event.target.classList.add('border-[var(--accent)]'); };
-    window.saveMoodAndGratitude = function() { 
-        user.moodLog.push({ date: new Date().toISOString(), mood: currentMood, gratitude: document.getElementById('gratitudeNote').value }); 
-        saveAll(); closeModal('moodModal'); showToast('تم تسجيل المزاج'); document.getElementById('gratitudeNote').value=''; currentMood=3; 
-    };
+        window.saveMoodAndGratitude = function() { 
+            user.moodLog.push({ 
+                date: new Date().toISOString(), 
+                mood: currentMood, 
+                gratitude: document.getElementById('gratitudeNote').value 
+            }); 
+            debouncedSave(); 
+            closeModal('moodModal'); 
+            showToast('تم تسجيل المزاج'); 
+            document.getElementById('gratitudeNote').value = ''; 
+            currentMood = 3; 
+        };
 
-    window.saveTomorrowDraft = function() { const val=document.getElementById('tomorrowDraft').value; if(val.trim()) { draftHistory.unshift({ text:val, date:new Date().toISOString() }); if(draftHistory.length>50) draftHistory.pop(); saveAll(); } localStorage.setItem('arise_draft',val); showToast('تم حفظ المسودة'); };
-    window.saveQuickNotes = function() { const val=document.getElementById('quickNotes').value; if(val.trim()) { notesHistory.unshift({ text:val, date:new Date().toISOString() }); if(notesHistory.length>50) notesHistory.pop(); saveAll(); } localStorage.setItem('arise_notes',val); showToast('تم حفظ الملاحظات'); };
-    function loadDrafts() { document.getElementById('tomorrowDraft').value = localStorage.getItem('arise_draft')||''; document.getElementById('quickNotes').value = localStorage.getItem('arise_notes')||''; }
-    window.showDraftHistory = function() { const panel=document.getElementById('draftHistoryPanel'); if(!draftHistory.length) panel.innerHTML='<p class="opacity-50 text-center">لا توجد مسودات سابقة</p>'; else panel.innerHTML = draftHistory.map((e,i)=>`<div class="border-b border-white/10 py-1 flex justify-between items-center"><span class="text-xs truncate max-w-[150px]">${e.text.substring(0,40)}</span><div><button onclick="restoreDraft(${i})" class="text-[10px] text-[var(--accent)] ml-2">استعادة</button><button onclick="deleteDraftItem(${i})" class="text-[10px] text-red-400/70">حذف</button></div></div>`).join('')+'<button onclick="clearAllDrafts()" class="text-[10px] text-red-400/70 w-full text-center mt-2 border-t border-white/10 pt-1">مسح كل المسودات</button>'; panel.classList.remove('hidden'); };
-    window.restoreDraft = function(i) { document.getElementById('tomorrowDraft').value = draftHistory[i].text; document.getElementById('draftHistoryPanel').classList.add('hidden'); };
-    window.deleteDraftItem = function(i) { draftHistory.splice(i,1); saveAll(); showDraftHistory(); };
-    window.clearAllDrafts = function() { if(confirm('مسح كل مسودات الغد؟')) { draftHistory=[]; saveAll(); showDraftHistory(); showToast('تم مسح الكل'); } };
-    window.showNotesHistory = function() { const panel=document.getElementById('notesHistoryPanel'); if(!notesHistory.length) panel.innerHTML='<p class="opacity-50 text-center">لا توجد ملاحظات سابقة</p>'; else panel.innerHTML = notesHistory.map((e,i)=>`<div class="border-b border-white/10 py-1 flex justify-between items-center"><span class="text-xs truncate max-w-[150px]">${e.text.substring(0,40)}</span><div><button onclick="restoreNote(${i})" class="text-[10px] text-[var(--accent)] ml-2">استعادة</button><button onclick="deleteNoteItem(${i})" class="text-[10px] text-red-400/70">حذف</button></div></div>`).join('')+'<button onclick="clearAllNotes()" class="text-[10px] text-red-400/70 w-full text-center mt-2 border-t border-white/10 pt-1">مسح كل الملاحظات</button>'; panel.classList.remove('hidden'); };
-    window.restoreNote = function(i) { document.getElementById('quickNotes').value = notesHistory[i].text; document.getElementById('notesHistoryPanel').classList.add('hidden'); };
-    window.deleteNoteItem = function(i) { notesHistory.splice(i,1); saveAll(); showNotesHistory(); };
-    window.clearAllNotes = function() { if(confirm('مسح كل الملاحظات؟')) { notesHistory=[]; saveAll(); showNotesHistory(); showToast('تم مسح الكل'); } };
+        // ====================== مسودات الغد والملاحظات ======================
+        window.saveTomorrowDraft = function() { 
+            const val = document.getElementById('tomorrowDraft').value; 
+            if (val.trim()) { 
+                draftHistory.unshift({ text: val, date: new Date().toISOString() }); 
+                if (draftHistory.length > 50) draftHistory.pop(); 
+                debouncedSave(); 
+            } 
+            localStorage.setItem('arise_draft', val); 
+            showToast('تم حفظ المسودة'); 
+        };
 
-    function renderLogsModal() {
-        const moodEmojis = {1:'😞',2:'😐',3:'🙂',4:'😊',5:'🤩'};
-        document.getElementById('moodHistoryList').innerHTML = user.moodLog.slice().reverse().map((log,idx) => `<div class="flex justify-between items-center border-b border-white/10 py-1"><span>${new Date(log.date).toLocaleDateString('en-US')} ${moodEmojis[log.mood]||'🙂'} ${log.gratitude ? '- '+log.gratitude.substring(0,30) : ''}</span><button onclick="deleteMoodItem(${user.moodLog.length-1-idx})" class="text-red-400/70 text-[10px]">حذف</button></div>`).join('');
-        document.getElementById('notesHistoryList').innerHTML = notesHistory.map((n,i)=>`<div class="flex justify-between items-center border-b border-white/10 py-1"><span class="truncate max-w-[200px]">${n.text.substring(0,40)}</span><button onclick="deleteNoteItem(${i})" class="text-red-400/70 text-[10px]">حذف</button></div>`).join('');
-        document.getElementById('draftsHistoryList').innerHTML = draftHistory.map((d,i)=>`<div class="flex justify-between items-center border-b border-white/10 py-1"><span class="truncate max-w-[200px]">${d.text.substring(0,40)}</span><button onclick="deleteDraftItem(${i})" class="text-red-400/70 text-[10px]">حذف</button></div>`).join('');
-    }
-    window.deleteMoodItem = function(idx) { user.moodLog.splice(idx,1); saveAll(); renderLogsModal(); showToast('تم حذف المزاج'); };
-    window.clearMoodHistory = function() { if(confirm('مسح كل سجل المزاج؟')) { user.moodLog = []; saveAll(); renderLogsModal(); showToast('تم مسح الكل'); } };
-    window.clearNotesHistory = function() { if(confirm('مسح كل الملاحظات؟')) { notesHistory = []; saveAll(); renderLogsModal(); showToast('تم مسح الكل'); } };
-    window.clearDraftsHistory = function() { if(confirm('مسح كل المسودات؟')) { draftHistory = []; saveAll(); renderLogsModal(); showToast('تم مسح الكل'); } };
+        window.saveQuickNotes = function() { 
+            const val = document.getElementById('quickNotes').value; 
+            if (val.trim()) { 
+                notesHistory.unshift({ text: val, date: new Date().toISOString() }); 
+                if (notesHistory.length > 50) notesHistory.pop(); 
+                debouncedSave(); 
+            } 
+            localStorage.setItem('arise_notes', val); 
+            showToast('تم حفظ الملاحظات'); 
+        };
 
-    function updateStreak() { const today = new Date().toDateString(); if (user.lastActive !== today) { user.streak = (user.lastActive === new Date(Date.now()-86400000).toDateString()) ? user.streak+1 : 1; user.lastActive = today; saveAll(); } document.getElementById('streakCount').innerText = user.streak; }
-    function updateDate() { 
-        const d = new Date();
-        const weekdays = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        document.getElementById('currentDate').innerText = `${weekdays[d.getDay()]}، ${year}/${month}/${day}`;
-    }
-    function setDailyTip() { const tips = ["الاستمرارية تتفوق على الذكاء دائماً.","برمج عقلك قبل أن تبرمج الكود.","الراحة جزء من العمل، لا تشعر بالذنب حيالها.","قاعدة الـ 5 دقائق: ابدأ المهمة لـ 5 دقائق فقط.","البيئة المنظمة تعني عقلاً منظماً.","تعلم متى تقول 'لا' للمشتتات.","النجاح هو مجموع خطوات صغيرة تتكرر كل يوم.","في البرمجة، التفكير 80% والكتابة 20%.","طالب العلم لا يشبع، والمبرمج لا يتوقف عن التعلم.","اجعل يومك يبدأ بانتصار صغير."]; document.getElementById('dailyTip').innerText = tips[Math.floor((new Date() - new Date(new Date().getFullYear(),0,0))/86400000) % tips.length]; }
-    function startLiveClock() { const el = document.getElementById('liveClock'); setInterval(() => { const d = new Date(); el.innerText = settings.timeFormat === '12' ? d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true}) : d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false}); },500); }
-    function renderSummaryStats() { 
-        const total=tasks.length, comp=tasks.filter(t=>t.completed).length;
-        document.getElementById('completionRate').innerText = total?Math.round(comp/total*100)+'%':'0%'; 
-        document.getElementById('remainingTasks').innerText = total-comp; 
-        document.getElementById('progressPercent').innerText = total?Math.round(comp/total*100)+'%':'0%'; 
-        const weekDays = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت']; 
-        const completedByDay=[0,0,0,0,0,0,0]; 
-        tasks.forEach(t=>{ if(t.completed && t.completedDate) { const day = new Date(t.completedDate).getDay(); completedByDay[day]++; } }); 
-        const maxVal=Math.max(...completedByDay,1); 
-        document.getElementById('weeklyChart').innerHTML = weekDays.map((d,i)=>`<div class="flex-1 flex flex-col items-center"><div class="w-full bg-white/10 h-32 relative"><div class="absolute bottom-0 w-full bg-[var(--accent)] transition-all" style="height:${(completedByDay[i]/maxVal)*100}%"></div></div><span class="text-[8px] mt-1">${d}</span><span class="text-[9px] font-mono">${completedByDay[i]}</span></div>`).join(''); 
-    }
-    window.toggleEmergencyMode = function() { emergencyMode=!emergencyMode; document.getElementById('emergencyBanner').classList.toggle('hidden',!emergencyMode); if(emergencyMode && focusMode) disableFocusMode(); renderTimeline(); };
-    window.toggleZenMode = function() { zenMode=!zenMode; document.body.classList.toggle('zen-mode',zenMode); };
-    window.setTimeFormat = function(f) { settings.timeFormat=f; saveAll(); startLiveClock(); renderTimeline(); };
-    function loadSettings() { document.querySelectorAll('input[name="timeFormat"]').forEach(r=>{ if(r.value===settings.timeFormat) r.checked=true; }); }
-    window.changeTheme = function(t) { document.body.className = document.body.className.replace(/theme-\S+/g,''); document.body.classList.add(`theme-${t}`); localStorage.setItem('arise_theme',t); };
-    window.openModal = function(id) { const modal=document.getElementById(id); if(modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); if(id==='focusModal') renderFocusModal(); if(id==='statsModal') renderSummaryStats(); if(id==='settingsModal') { renderTemplateSelectForEdit(); renderTemplateManagers(); } if(id==='examModal') renderExamsList(); if(id==='logsModal') renderLogsModal(); } };
-    window.closeModal = function(id) { const modal=document.getElementById(id); if(modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); } };
-    window.shareAchievement = function() { const el=document.querySelector('.main-content'); if(el) html2canvas(el,{backgroundColor:getComputedStyle(document.body).getPropertyValue('--bg')}).then(canvas=>{ canvas.toBlob(blob=>{ const file=new File([blob],'arise.png',{type:'image/png'}); if(navigator.share) navigator.share({files:[file],title:'Arise OS'}).catch(()=>{ const a=document.createElement('a'); a.download='arise.png'; a.href=canvas.toDataURL(); a.click(); }); else { const a=document.createElement('a'); a.download='arise.png'; a.href=canvas.toDataURL(); a.click(); } }); }).catch(()=>showToast('حدث خطأ')); else showToast('لا يوجد محتوى'); };
-    window.exportData = function() { const data={tasks,templates,user,settings,currentTemplateName,draftHistory,notesHistory,focusCategories}; const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`arise_backup_${new Date().toISOString().slice(0,19)}.json`; a.click(); showToast('تم التصدير'); };
-    window.importData = function(input) { const file=input.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=function(e){ try{ const d=JSON.parse(e.target.result); if(d.tasks) tasks=d.tasks; if(d.templates) templates=d.templates; if(d.user) user=d.user; if(d.settings) settings=d.settings; if(d.currentTemplateName) currentTemplateName=d.currentTemplateName; if(d.draftHistory) draftHistory=d.draftHistory; if(d.notesHistory) notesHistory=d.notesHistory; if(d.focusCategories) focusCategories=d.focusCategories; saveAll(); renderAll(); loadSettings(); changeTheme(localStorage.getItem('arise_theme')||'matte-gold'); showToast('تم الاستيراد'); } catch(err){ showToast('ملف غير صالح'); } }; reader.readAsText(file); };
-    window.resetAllData = function() { if(confirm('⚠️ حذف كل البيانات؟')) { localStorage.clear(); location.reload(); } };
-    window.installPWA = function() { showToast('من القائمة > تثبيت التطبيق'); closeWelcome(); };
+        function loadDrafts() { 
+            document.getElementById('tomorrowDraft').value = localStorage.getItem('arise_draft') || ''; 
+            document.getElementById('quickNotes').value = localStorage.getItem('arise_notes') || ''; 
+        }
 
-    function initPomodoro() { 
-        const timerDisplay=document.getElementById('pomodoroDisplay'), toggleBtn=document.getElementById('timerToggleBtn'), resetBtn=document.getElementById('timerResetBtn'); 
-        function update(){ timerDisplay.innerText=`${String(Math.floor(timeLeft/60)).padStart(2,'0')}:${String(timeLeft%60).padStart(2,'0')}`; } 
-        toggleBtn.onclick=()=>{ if(timerRunning){ clearInterval(timerInterval); timerRunning=false; toggleBtn.innerText='بدء'; }else{ timerInterval=setInterval(()=>{ if(timeLeft<=0){ clearInterval(timerInterval); timerRunning=false; toggleBtn.innerText='بدء'; showToast('⏰ انتهت الجلسة!'); timeLeft=25*60; update(); return; } timeLeft--; update(); },1000); timerRunning=true; toggleBtn.innerText='إيقاف'; } }; 
-        resetBtn.onclick=()=>{ clearInterval(timerInterval); timerRunning=false; timeLeft=25*60; update(); toggleBtn.innerText='بدء'; }; update(); 
-    }
+        window.showDraftHistory = function() { 
+            const panel = document.getElementById('draftHistoryPanel'); 
+            if (!draftHistory.length) panel.innerHTML = '<p class="opacity-50 text-center">لا توجد مسودات سابقة</p>'; 
+            else panel.innerHTML = draftHistory.map((e, i) => 
+                `<div class="border-b border-white/10 py-1 flex justify-between items-center">
+                    <span class="text-xs truncate max-w-[150px]">${escapeHtml(e.text.substring(0,40))}</span>
+                    <div>
+                        <button onclick="restoreDraft(${i})" class="text-[10px] text-[var(--accent)] ml-2">استعادة</button>
+                        <button onclick="deleteDraftItem(${i})" class="text-[10px] text-red-400/70">حذف</button>
+                    </div>
+                </div>`
+            ).join('') + '<button onclick="clearAllDrafts()" class="text-[10px] text-red-400/70 w-full text-center mt-2 border-t border-white/10 pt-1">مسح كل المسودات</button>'; 
+            panel.classList.remove('hidden'); 
+        };
 
-    function renderAll() {
-        renderSelectors(); renderCategoryCards(); renderTimeline(); renderSummaryStats(); renderTemplateButtons();
-        updateUserDisplay(); updateExamCountdown(); updateStreak(); updateDate(); setDailyTip();
-        if(focusMode) document.getElementById('focusBanner').classList.remove('hidden');
-        else document.getElementById('focusBanner').classList.add('hidden');
-        lucide.createIcons(); saveAll();
-    }
+        window.restoreDraft = function(i) { 
+            document.getElementById('tomorrowDraft').value = draftHistory[i].text; 
+            document.getElementById('draftHistoryPanel').classList.add('hidden'); 
+        };
 
-    window.onload = () => {
-        if(localStorage.getItem('arise_welcomed')) document.getElementById('welcomeScreen').style.display='none';
-        focusCategories = JSON.parse(localStorage.getItem('arise_focus_categories')) || [];
-        focusMode = focusCategories.length > 0;
-        updateStreak(); updateDate(); setDailyTip(); renderAll(); startLiveClock(); initPomodoro(); loadDrafts(); loadSettings();
-        const savedTheme = localStorage.getItem('arise_theme')||'matte-gold'; changeTheme(savedTheme);
-        document.getElementById('searchBox')?.addEventListener('input',(e)=>{ if(['ayanokouji','sung jin-woo'].includes(e.target.value.trim().toLowerCase())){ document.body.classList.add('theme-shadow'); setTimeout(()=>document.body.classList.remove('theme-shadow'),30000); showToast('وضع الظل مُفعّل'); } });
-    };
-})();
+        window.deleteDraftItem = function(i) { 
+            draftHistory.splice(i, 1); 
+            debouncedSave(); 
+            showDraftHistory(); 
+        };
+
+        window.clearAllDrafts = function() { 
+            if (confirm('مسح كل مسودات الغد؟')) { 
+                draftHistory = []; 
+                debouncedSave(); 
+                showDraftHistory(); 
+                showToast('تم مسح الكل'); 
+            } 
+        };
+
+        window.showNotesHistory = function() { 
+            const panel = document.getElementById('notesHistoryPanel'); 
+            if (!notesHistory.length) panel.innerHTML = '<p class="opacity-50 text-center">لا توجد ملاحظات سابقة</p>'; 
+            else panel.innerHTML = notesHistory.map((e, i) => 
+                `<div class="border-b border-white/10 py-1 flex justify-between items-center">
+                    <span class="text-xs truncate max-w-[150px]">${escapeHtml(e.text.substring(0,40))}</span>
+                    <div>
+                        <button onclick="restoreNote(${i})" class="text-[10px] text-[var(--accent)] ml-2">استعادة</button>
+                        <button onclick="deleteNoteItem(${i})" class="text-[10px] text-red-400/70">حذف</button>
+                    </div>
+                </div>`
+            ).join('') + '<button onclick="clearAllNotes()" class="text-[10px] text-red-400/70 w-full text-center mt-2 border-t border-white/10 pt-1">مسح كل الملاحظات</button>'; 
+            panel.classList.remove('hidden'); 
+        };
+
+        window.restoreNote = function(i) { 
+            document.getElementById('quickNotes').value = notesHistory[i].text; 
+            document.getElementById('notesHistoryPanel').classList.add('hidden'); 
+        };
+
+        window.deleteNoteItem = function(i) { 
+            notesHistory.splice(i, 1); 
+            debouncedSave(); 
+            showNotesHistory(); 
+        };
+
+        window.clearAllNotes = function() { 
+            if (confirm('مسح كل الملاحظات؟')) { 
+                notesHistory = []; 
+                debouncedSave(); 
+                showNotesHistory(); 
+                showToast('تم مسح الكل'); 
+            } 
+        };
+
+        // ====================== سجل العمليات (مودال السجلات) ======================
+        function renderLogsModal() {
+            const moodEmojis = {1:'😞',2:'😐',3:'🙂',4:'😊',5:'🤩'};
+            document.getElementById('moodHistoryList').innerHTML = user.moodLog.slice().reverse()
+                .map((log, idx) => {
+                    const originalIdx = user.moodLog.length - 1 - idx;
+                    return `<div class="flex justify-between items-center border-b border-white/10 py-1">
+                        <span>${new Date(log.date).toLocaleDateString('en-US')} ${moodEmojis[log.mood] || '🙂'} ${log.gratitude ? '- '+escapeHtml(log.gratitude.substring(0,30)) : ''}</span>
+                        <button onclick="deleteMoodItem(${originalIdx})" class="text-red-400/70 text-[10px]">حذف</button>
+                    </div>`;
+                }).join('');
+            document.getElementById('notesHistoryList').innerHTML = notesHistory.map((n,i) => 
+                `<div class="flex justify-between items-center border-b border-white/10 py-1">
+                    <span class="truncate max-w-[200px]">${escapeHtml(n.text.substring(0,40))}</span>
+                    <button onclick="deleteNoteItem(${i})" class="text-red-400/70 text-[10px]">حذف</button>
+                </div>`
+            ).join('');
+            document.getElementById('draftsHistoryList').innerHTML = draftHistory.map((d,i) => 
+                `<div class="flex justify-between items-center border-b border-white/10 py-1">
+                    <span class="truncate max-w-[200px]">${escapeHtml(d.text.substring(0,40))}</span>
+                    <button onclick="deleteDraftItem(${i})" class="text-red-400/70 text-[10px]">حذف</button>
+                </div>`
+            ).join('');
+        }
+
+        window.deleteMoodItem = function(idx) { 
+            user.moodLog.splice(idx, 1); 
+            debouncedSave(); 
+            renderLogsModal(); 
+            showToast('تم حذف المزاج'); 
+        };
+
+        window.clearMoodHistory = function() { 
+            if (confirm('مسح كل سجل المزاج؟')) { 
+                user.moodLog = []; 
+                debouncedSave(); 
+                renderLogsModal(); 
+                showToast('تم مسح الكل'); 
+            } 
+        };
+
+        window.clearNotesHistory = function() { 
+            if (confirm('مسح كل الملاحظات؟')) { 
+                notesHistory = []; 
+                debouncedSave(); 
+                renderLogsModal(); 
+                showToast('تم مسح الكل'); 
+            } 
+        };
+
+        window.clearDraftsHistory = function() { 
+            if (confirm('مسح كل المسودات؟')) { 
+                draftHistory = []; 
+                debouncedSave(); 
+                renderLogsModal(); 
+                showToast('تم مسح الكل'); 
+            } 
+        };
+
+        // ====================== إعدادات الوقت والثيم ======================
+        window.setTimeFormat = function(f) { 
+            settings.timeFormat = f; 
+            debouncedSave(); 
+            startLiveClock(); 
+            renderTimeline(); 
+        };
+
+        function loadSettings() { 
+            document.querySelectorAll('input[name="timeFormat"]').forEach(r => { 
+                if (r.value === settings.timeFormat) r.checked = true; 
+            }); 
+        }
+
+        window.changeTheme = function(t) { 
+            document.body.className = document.body.className.replace(/theme-\S+/g, ''); 
+            document.body.classList.add(`theme-${t}`); 
+            localStorage.setItem('arise_theme', t); 
+        };
+
+        // ====================== مودالات ======================
+        window.openModal = function(id) { 
+            const modal = document.getElementById(id); 
+            if (modal) { 
+                modal.classList.remove('hidden'); 
+                modal.classList.add('flex'); 
+                if (id === 'focusModal') renderFocusModal(); 
+                if (id === 'statsModal') renderSummaryStats(); 
+                if (id === 'settingsModal') { 
+                    renderTemplateSelectForEdit(); 
+                    renderTemplateManagers(); 
+                } 
+                if (id === 'examModal') renderExamsList(); 
+                if (id === 'logsModal') renderLogsModal(); 
+            } 
+        };
+
+        window.closeModal = function(id) { 
+            const modal = document.getElementById(id); 
+            if (modal) { 
+                modal.classList.add('hidden'); 
+                modal.classList.remove('flex'); 
+            } 
+        };
+
+        // ====================== تصدير واستيراد ومشاركة ======================
+        window.shareAchievement = function() { 
+            const el = document.querySelector('.main-content'); 
+            if (el) {
+                html2canvas(el, { backgroundColor: getComputedStyle(document.body).getPropertyValue('--bg') })
+                    .then(canvas => { 
+                        canvas.toBlob(blob => { 
+                            const file = new File([blob], 'arise.png', {type: 'image/png'}); 
+                            if (navigator.share) {
+                                navigator.share({files: [file], title: 'Arise OS'}).catch(() => {
+                                    const a = document.createElement('a'); 
+                                    a.download = 'arise.png'; 
+                                    a.href = canvas.toDataURL(); 
+                                    a.click(); 
+                                });
+                            } else { 
+                                const a = document.createElement('a'); 
+                                a.download = 'arise.png'; 
+                                a.href = canvas.toDataURL(); 
+                                a.click(); 
+                            } 
+                        }); 
+                    }).catch(() => showToast('حدث خطأ')); 
+            } else showToast('لا يوجد محتوى'); 
+        };
+
+        window.exportData = function() { 
+            const data = { tasks, templates, user, settings, currentTemplateName, draftHistory, notesHistory, focusCategories }; 
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'}); 
+            const a = document.createElement('a'); 
+            a.href = URL.createObjectURL(blob); 
+            a.download = `arise_backup_${new Date().toISOString().slice(0,19)}.json`; 
+            a.click(); 
+            showToast('تم التصدير'); 
+        };
+
+        window.importData = function(input) { 
+            const file = input.files[0]; 
+            if (!file) return; 
+            const reader = new FileReader(); 
+            reader.onload = function(e) { 
+                try { 
+                    const d = JSON.parse(e.target.result); 
+                    if (d.tasks) tasks = d.tasks; 
+                    if (d.templates) templates = d.templates; 
+                    if (d.user) user = d.user; 
+                    if (d.settings) settings = d.settings; 
+                    if (d.currentTemplateName) currentTemplateName = d.currentTemplateName; 
+                    if (d.draftHistory) draftHistory = d.draftHistory; 
+                    if (d.notesHistory) notesHistory = d.notesHistory; 
+                    if (d.focusCategories) focusCategories = d.focusCategories; 
+                    focusMode = focusCategories.length > 0;
+                    validateData();
+                    migrateTasksToCurrentTemplate();
+                    debouncedSave(); 
+                    renderAll(); 
+                    loadSettings(); 
+                    changeTheme(localStorage.getItem('arise_theme') || 'matte-gold'); 
+                    showToast('تم الاستيراد'); 
+                } catch(err) { 
+                    showToast('ملف غير صالح'); 
+                } 
+            }; 
+            reader.readAsText(file); 
+        };
+
+        window.resetAllData = function() { 
+            if (confirm('⚠️ حذف كل البيانات؟')) { 
+                localStorage.clear(); 
+                location.reload(); 
+            } 
+        };
+
+        window.installPWA = function() { 
+            showToast('من القائمة > تثبيت التطبيق'); 
+            closeWelcome(); 
+        };
+
+        window.closeWelcome = function() { 
+            document.getElementById('welcomeScreen').style.display = 'none'; 
+            localStorage.setItem('arise_welcomed', '1'); 
+        };
+
+        function showToast(msg) { 
+            Toastify({ text: msg, duration: 3000, gravity: "bottom", position: "center", style: { background: 'var(--surface)', color: 'var(--text-main)', border: '1px solid var(--accent)' } }).showToast(); 
+        }
+
+        // ====================== مؤقت بومودورو ======================
+        function initPomodoro() { 
+            const timerDisplay = document.getElementById('pomodoroDisplay');
+            const toggleBtn = document.getElementById('timerToggleBtn');
+            const resetBtn = document.getElementById('timerResetBtn');
+            
+            function update() { 
+                timerDisplay.innerText = `${String(Math.floor(timeLeft / 60)).padStart(2, '0')}:${String(timeLeft % 60).padStart(2, '0')}`; 
+            }
+            
+            toggleBtn.onclick = () => { 
+                if (timerRunning) { 
+                    clearInterval(timerInterval); 
+                    timerRunning = false; 
+                    toggleBtn.innerText = 'بدء'; 
+                } else { 
+                    timerInterval = setInterval(() => { 
+                        if (timeLeft <= 0) { 
+                            clearInterval(timerInterval); 
+                            timerRunning = false; 
+                            toggleBtn.innerText = 'بدء'; 
+                            showToast('⏰ انتهت الجلسة!'); 
+                            timeLeft = 25 * 60; 
+                            update(); 
+                            return; 
+                        } 
+                        timeLeft--; 
+                        update(); 
+                    }, 1000); 
+                    timerRunning = true; 
+                    toggleBtn.innerText = 'إيقاف'; 
+                } 
+            };
+            
+            resetBtn.onclick = () => { 
+                clearInterval(timerInterval); 
+                timerRunning = false; 
+                timeLeft = 25 * 60; 
+                update(); 
+                toggleBtn.innerText = 'بدء'; 
+            };
+            update(); 
+        }
+
+        // ====================== التهيئة الشاملة ======================
+        function renderAll() {
+            renderSelectors(); 
+            renderCategoryCards(); 
+            renderTimeline(); 
+            renderSummaryStats(); 
+            renderTemplateButtons();
+            updateUserDisplay(); 
+            updateExamCountdown(); 
+            updateStreak(); 
+            updateDate(); 
+            setDailyTip();
+            if (focusMode && focusCategories.length) 
+                document.getElementById('focusBanner').classList.remove('hidden');
+            else 
+                document.getElementById('focusBanner').classList.add('hidden');
+            if (emergencyMode) 
+                document.getElementById('emergencyBanner').classList.remove('hidden');
+            else 
+                document.getElementById('emergencyBanner').classList.add('hidden');
+            lucide.createIcons(); 
+        }
+
+        // بدء التطبيق
+        window.onload = () => {
+            loadFromLocalStorage();
+            if (localStorage.getItem('arise_welcomed')) 
+                document.getElementById('welcomeScreen').style.display = 'none';
+            
+            renderAll(); 
+            startLiveClock(); 
+            initPomodoro(); 
+            loadDrafts(); 
+            loadSettings();
+            
+            const savedTheme = localStorage.getItem('arise_theme') || 'matte-gold'; 
+            changeTheme(savedTheme);
+            
+            document.getElementById('searchBox')?.addEventListener('input', (e) => { 
+                if (['ayanokouji', 'sung jin-woo'].includes(e.target.value.trim().toLowerCase())) { 
+                    document.body.classList.add('theme-shadow'); 
+                    setTimeout(() => document.body.classList.remove('theme-shadow'), 30000); 
+                    showToast('وضع الظل مُفعّل'); 
+                } 
+            });
+        };
+    })();
 </script>
 </body>
 </html>
